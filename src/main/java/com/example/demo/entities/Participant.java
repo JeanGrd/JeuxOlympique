@@ -13,6 +13,6 @@ import lombok.Setter;
 public class Participant extends Personne {
 
     @ManyToOne
-    @JoinColumn(name = "delegation_id")
+    @JoinColumn(name = "delegationId")
     private Delegation delegation;
 }

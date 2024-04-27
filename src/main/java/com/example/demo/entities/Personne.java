@@ -10,11 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Personne {
+public class Personne extends Entite {
 
-    @Id
-    @GeneratedValue
-    private long id;
     private String prenom;
     private String email;
 }

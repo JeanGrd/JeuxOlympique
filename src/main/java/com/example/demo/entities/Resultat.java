@@ -23,6 +23,6 @@ public class Resultat {
     private int position;
 
     @ManyToOne
-    @JoinColumn(name = "participant_id", referencedColumnName = "id")
+    @JoinColumn(name = "participantId", referencedColumnName = "id")
     private Participant participant;
 }
