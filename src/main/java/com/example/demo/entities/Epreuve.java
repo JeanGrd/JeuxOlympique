@@ -12,13 +12,16 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-public class Epreuve extends Entite {
+public class Epreuve {
 
+    @Id
+    @GeneratedValue
+    private long epreuve_id;
+    private String nom;
     private Date date;
-    private int nbPlaces;
-
+    private int nb_places;
     @ManyToOne
-    @JoinColumn(name = "infrastructureSportiveId")
+    @JoinColumn(name = "infrastructure_id")
     private InfrastructureSportive infrastructureSportive;
 
 }

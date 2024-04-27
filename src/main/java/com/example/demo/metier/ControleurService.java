@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.metier;
 
 import com.example.demo.dao.BilletRepository;
 import com.example.demo.entities.Billet;

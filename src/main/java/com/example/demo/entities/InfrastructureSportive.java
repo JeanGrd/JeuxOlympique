@@ -10,8 +10,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class InfrastructureSportive extends Entite {
+public class InfrastructureSportive {
 
+    @Id
+    @GeneratedValue
+    private long infrastructure_id;
+    private String nom;
     private String adresse;
     private int capacite;
 }
