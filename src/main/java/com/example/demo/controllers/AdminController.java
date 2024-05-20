@@ -33,6 +33,12 @@ public class AdminController {
         return ResponseEntity.ok(created);
     }
 
+    @PostMapping("/controleurs")
+    public ResponseEntity<Controleur> createControleur(@RequestBody Controleur controleur) {
+        Controleur created = adminService.creerControleur(controleur.getNom(), controleur.getPrenom(), controleur.getEmail());
+        return ResponseEntity.ok(created);
+    }
+
     @PostMapping("/billets")
     public ResponseEntity<Billet> createBillet(@RequestBody Billet billet) {
         Billet created = adminService.creerBillet(billet.getPrix(), billet.getEpreuve(), billet.getSpectateur());

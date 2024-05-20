@@ -3,11 +3,9 @@ package com.example.demo.metier;
 import com.example.demo.dao.*;
 import com.example.demo.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.swing.*;
 import java.util.Date;
 
 @Service
@@ -37,10 +35,14 @@ public class AdminService {
     @Autowired
     private SpectateurRepository spectateurRepository;
 
+    @Autowired
+    private ControleurRepository controleurRepository;
+
     public Billet creerBillet(double prix, Epreuve epreuve, Spectateur spectateur) {
         Billet billet = new Billet();
         billet.setPrix(prix);
         billet.setEpreuve(epreuve);
+        billet.setEtat("Réservé");
         billet.setSpectateur(spectateur);
         return billetRepository.save(billet);
     }
@@ -101,5 +103,13 @@ public class AdminService {
         spectateur.setPrenom(prenom);
         spectateur.setEmail(email);
         return spectateurRepository.save(spectateur);
+    }
+
+    public Controleur creerControleur(String nom, String prenom, String email) {
+        Controleur controleur = new Controleur();
+        controleur.setNom(nom);
+        controleur.setPrenom(prenom);
+        controleur.setEmail(email);
+        return controleurRepository.save(controleur);
     }
 }

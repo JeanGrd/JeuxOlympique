@@ -54,4 +54,8 @@ public class SpectateurService {
         return StreamSupport.stream(epreuves.spliterator(), false)
                 .collect(Collectors.toList());
     }
+
+    public boolean verifierEmailExist(String email) {
+        return spectateurRepository.findByEmail(email).isPresent();
+    }
 }

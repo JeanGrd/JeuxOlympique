@@ -3,6 +3,7 @@ package com.example.demo.metier;
 import com.example.demo.dao.EpreuveRepository;
 import com.example.demo.dao.DelegationRepository;
 import com.example.demo.dao.InfrastructureSportiveRepository;
+import com.example.demo.dao.OrganisateurRepository;
 import com.example.demo.entities.Epreuve;
 import com.example.demo.entities.Delegation;
 import com.example.demo.entities.InfrastructureSportive;
@@ -20,6 +21,8 @@ public class OrganisateurService {
     private DelegationRepository delegationRepository;
     @Autowired
     private InfrastructureSportiveRepository infrastructureSportiveRepository;
+    @Autowired
+    private OrganisateurRepository organisateurRepository;
 
     public Epreuve creerEpreuve(String nom, Date date, int nbPlaces, long infrastructureSportiveId) {
         Epreuve epreuve = new Epreuve();
@@ -34,11 +37,20 @@ public class OrganisateurService {
         return epreuveRepository.save(epreuve);
     }
 
+    public boolean verifierEmailExist(String email) {
+        return organisateurRepository.findByEmail(email).isPresent();
+    }
+
     public Delegation creerDelegation(Delegation delegation) {
         return delegationRepository.save(delegation);
+    }
+
+    public void supprimerDelegation(long delegationId) {
+        delegationRepository.deleteById(delegationId);
     }
 
     public void supprimerEpreuve(long epreuveId) {
         epreuveRepository.deleteById(epreuveId);
     }
+
 }
