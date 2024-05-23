@@ -57,7 +57,7 @@ public class AdminService {
         Epreuve epreuve = new Epreuve();
         epreuve.setNom(nom);
         epreuve.setDate(date);
-        epreuve.setNb_places(nbPlaces);
+        epreuve.setNb_delegations(nbPlaces);
         epreuve.setInfrastructureSportive(infrastructure);
         return epreuveRepository.save(epreuve);
     }
