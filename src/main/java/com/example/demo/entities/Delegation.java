@@ -1,4 +1,3 @@
-// Délégation.java
 package com.example.demo.entities;
 
 import jakarta.persistence.*;
@@ -13,10 +12,14 @@ import java.util.Set;
 public class Delegation {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long delegation_id;
+
     private String nom;
     private int nb_medaille_or;
     private int nb_medaille_argent;
     private int nb_medaille_bronze;
 
+    @ManyToMany(mappedBy = "delegations")
+    private Set<Epreuve> epreuves;
 }
