@@ -23,7 +23,7 @@ public class AdminController {
 
     @PostMapping("/epreuves")
     public ResponseEntity<Epreuve> createEpreuve(@RequestBody Epreuve epreuve) {
-        Epreuve created = adminService.creerEpreuve(epreuve.getNom(), new Date(), epreuve.getNb_places(), epreuve.getInfrastructureSportive());
+        Epreuve created = adminService.creerEpreuve(epreuve.getNom(), new Date(), epreuve.getNb_billets(), epreuve.getInfrastructureSportive());
         return ResponseEntity.ok(created);
     }
 

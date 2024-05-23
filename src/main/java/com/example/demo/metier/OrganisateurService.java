@@ -23,14 +23,14 @@ public class OrganisateurService {
     @Autowired
     private ControleurRepository controleurRepository;
 
-    public Epreuve creerEpreuve(String nom, Date date, int nbDelegations, long infrastructureSportiveId) {
+    public Epreuve creerEpreuve(String nom, Date date, int nbDelegations, String infrastructureSportive) {
         Epreuve epreuve = new Epreuve();
         epreuve.setNom(nom);
         epreuve.setDate(date);
         epreuve.setNb_delegations(nbDelegations);
 
-        InfrastructureSportive infra = infrastructureSportiveRepository.findById(infrastructureSportiveId)
-                .orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec l'ID : " + infrastructureSportiveId));
+        InfrastructureSportive infra = infrastructureSportiveRepository.findByNom(infrastructureSportive)
+                .orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec le nom : " + infrastructureSportive));
 
         epreuve.setInfrastructureSportive(infra);
         return epreuveRepository.save(epreuve);
@@ -40,7 +40,12 @@ public class OrganisateurService {
         return organisateurRepository.findByEmail(email).isPresent();
     }
 
-    public Delegation creerDelegation(Delegation delegation) {
+    public Delegation creerDelegation(String nom) {
+        Delegation delegation = new Delegation();
+        delegation.setNom(nom);
+        delegation.setNb_medaille_bronze(0);
+        delegation.setNb_medaille_argent(0);
+        delegation.setNb_medaille_or(0);
         return delegationRepository.save(delegation);
     }
 
@@ -52,12 +57,11 @@ public class OrganisateurService {
         epreuveRepository.deleteById(epreuveId);
     }
 
-    public Participant creerParticipant(String nom, String prenom, String email, Delegation delegation) {
+    public Participant creerParticipant(String nom, String prenom, String email) {
         Participant participant = new Participant();
         participant.setNom(nom);
         participant.setPrenom(prenom);
         participant.setEmail(email);
-        participant.setDelegation(delegation);
         return participantRepository.save(participant);
     }
 
@@ -93,9 +97,18 @@ public class OrganisateurService {
         return epreuveRepository.getChiffreAffaires();
     }
 
+    public double getTotalVentes() {
+        return epreuveRepository.getTotalVentes();
+    }
+
     // ???
-    public Participant setDelegation(Participant participant, Delegation delegation) {
+    public String setDelegation(String participantEmail, String delegationNom) {
+        Participant participant = participantRepository.findByEmail(participantEmail)
+                .orElseThrow(() -> new RuntimeException("Participant non trouvée avec le nom : " + participantEmail));;
+        Delegation delegation = delegationRepository.findByNom(delegationNom)
+                .orElseThrow(() -> new RuntimeException("Délégation non trouvée avec le nom : " + delegationNom));;
         participant.setDelegation(delegation);
-        return participantRepository.save(participant);
+        participantRepository.save(participant);
+        return "ok";
     }
 }

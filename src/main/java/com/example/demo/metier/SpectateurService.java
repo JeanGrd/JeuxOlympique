@@ -30,7 +30,7 @@ public class SpectateurService {
     private double remboursement;
 
     public String reserverBillet(Billet billet) {
-        if (nombreBilletsPourEpreuve(billet.getSpectateur().getSpectateur_id(), billet.getEpreuve().getEpreuve_id()) >= MAX_BILLETS_PAR_EPREUVE) {
+        if (nombreBilletsPourEpreuve(billet.getSpectateur(), billet.getEpreuve()) >= MAX_BILLETS_PAR_EPREUVE) {
             return "Vous avez déjà réservé le nombre maximum de billets pour cette épreuve.";
         }
         billet.setEtat("Réservé");
@@ -63,8 +63,8 @@ public class SpectateurService {
         }
     }
 
-    private int nombreBilletsPourEpreuve(long spectateurId, long epreuveId) {
-        return billetRepository.countBySpectateurIdAndEpreuveId(spectateurId, epreuveId);
+    private int nombreBilletsPourEpreuve(Spectateur spectateur, Epreuve epreuve) {
+        return billetRepository.countAllBySpectateurAndEpreuve(spectateur, epreuve);
     }
 
     public Spectateur creerSpectateur(String nom, String prenom, String email) {

@@ -11,6 +11,9 @@ import com.example.demo.entities.Resultat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -34,8 +37,19 @@ public class ParticipantService {
     public Participant inscrireEpreuve(long participantId, long epreuveId) {
         Participant participant = participantRepository.findById(participantId).orElseThrow();
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
-        if (epreuve.getNb_delegations() >= epreuve.getDelegations().size())
-            epreuve.getDelegations().add(participant.getDelegation());
+
+        // Vérifier si l'inscription est possible (avant 10 jours de la date de l'épreuve)
+        LocalDate now = LocalDate.now();
+        LocalDate dateEpreuve = epreuve.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (ChronoUnit.DAYS.between(now, dateEpreuve) > 10) {
+            if (epreuve.getNb_delegations() >= epreuve.getDelegations().size()) {
+                epreuve.getDelegations().add(participant.getDelegation());
+                epreuveRepository.save(epreuve); // Sauvegarder les modifications
+                return participant;
+            }
+        } else {
+            throw new IllegalArgumentException("L'inscription est fermée 10 jours avant la date de l'épreuve.");
+        }
         return participant;
     }
 

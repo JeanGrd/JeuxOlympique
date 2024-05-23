@@ -36,9 +36,9 @@ public class OrganisateurController {
     }
 
     @PostMapping("/delegation")
-    public ResponseEntity<Delegation> creerDelegation(@RequestBody Delegation delegation, HttpSession session) {
+    public ResponseEntity<Delegation> creerDelegation(@RequestBody String nom, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            Delegation created = organisateurService.creerDelegation(delegation);
+            Delegation created = organisateurService.creerDelegation(nom);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -57,9 +57,9 @@ public class OrganisateurController {
 
     @PostMapping("/epreuve")
     public ResponseEntity<Epreuve> creerEpreuve(@RequestParam String nom, @RequestParam Date date,
-                                                @RequestParam int nbPlaces, @RequestParam long infrastructureId, HttpSession session) {
+                                                @RequestParam int nbPlaces, @RequestParam String infrastructure, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            Epreuve created = organisateurService.creerEpreuve(nom, date, nbPlaces, infrastructureId);
+            Epreuve created = organisateurService.creerEpreuve(nom, date, nbPlaces, infrastructure);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -73,6 +73,36 @@ public class OrganisateurController {
             return ResponseEntity.ok("Épreuve supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @GetMapping("/places-disponibles")
+    public ResponseEntity<Integer> getTotalPlacesDisponibles(HttpSession session) {
+        if (session.getAttribute("participantEmail") != null) {
+            int placesDisponibles = organisateurService.getTotalPlacesDisponibles();
+            return ResponseEntity.ok(placesDisponibles);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
+    @GetMapping("/chiffre-affaires")
+    public ResponseEntity<Double> getChiffreAffaires(HttpSession session) {
+        if (session.getAttribute("participantEmail") != null) {
+            double chiffreAffaires = organisateurService.getChiffreAffaires();
+            return ResponseEntity.ok(chiffreAffaires);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
+    @GetMapping("/total-ventes")
+    public ResponseEntity<Double> getTotalVentes(HttpSession session) {
+        if (session.getAttribute("participantEmail") != null) {
+            double chiffreAffaires = organisateurService.getTotalVentes();
+            return ResponseEntity.ok(chiffreAffaires);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 }

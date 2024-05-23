@@ -1,10 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.entities.*;
-import com.example.demo.metier.AdminService;
-import com.example.demo.metier.SpectateurService;
-import com.example.demo.metier.ParticipantService;
-import com.example.demo.metier.ControleurService;
+import com.example.demo.metier.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,6 +21,8 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
     private ParticipantService participantService;
     @Autowired
     private ControleurService controleurService;
+    @Autowired
+    private OrganisateurService organisateurService;
 
     public static void main(String[] args) {
         SpringApplication.run(JeuxMiagiquesApplication.class, args);
@@ -31,21 +30,27 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        Organisateur organisateur = adminService.creerOrganisateur("Admin", "root", "admin@root.fr", "orga");
+
         // Création d'une infrastructure sportive
-        InfrastructureSportive infrastructure = adminService.creerInfrastructureSportive("Stade Olympique", 10000, "1234 Rue Olympique");
+        adminService.creerInfrastructureSportive("Stade Olympique", 10000, "1234 Rue Olympique");
 
         // Création d'une épreuve
-        Epreuve epreuve = adminService.creerEpreuve("100m sprint", new Date(), 500, infrastructure);
+        Epreuve epreuve = organisateurService.creerEpreuve("100m sprint", new Date(), 500, "Stade Olympique");
 
         // Création d'un spectateur
-        Spectateur spectateur = adminService.creerSpectateur("Smith", "Anna", "anna.smith@example.com");
+        Spectateur spectateur = spectateurService.creerSpectateur("Smith", "Anna", "anna.smith@example.com");
 
         // Création d'un participant
-        Delegation delegation = adminService.creerDelegation("USA");
-        Participant participant = adminService.creerParticipant("Doe", "John", "john.doe@example.com", delegation);
+        organisateurService.creerDelegation("France");
+        organisateurService.creerDelegation("USA");
+        Participant participant = organisateurService.creerParticipant("Doe", "John", "john.doe@example.com");
+
+        organisateurService.setDelegation("john.doe@example.com", "France");
 
         // Création d'un contrôleur
-        Controleur controleur = adminService.creerControleur("Brown", "Charlie", "charlie.brown@example.com");
+        Controleur controleur = organisateurService.creerControleur("Brown", "Charlie", "charlie.brown@example.com");
 
         // Tentative de consulter le programme sans être connecté (simulé ici comme un appel direct de méthode)
         try {

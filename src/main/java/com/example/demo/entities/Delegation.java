@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.Set;
 
 @Getter
@@ -14,7 +13,6 @@ import java.util.Set;
 public class Delegation {
 
     @Id
-    @GeneratedValue
     private long delegation_id;
     private String nom;
     private int nb_medaille_or;
