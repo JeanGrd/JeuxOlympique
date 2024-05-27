@@ -20,6 +20,4 @@ public class Delegation {
     private int nb_medaille_argent;
     private int nb_medaille_bronze;
 
-    @ManyToMany(mappedBy = "delegations")
-    private Set<Epreuve> epreuves;
 }

@@ -13,7 +13,7 @@ public class Resultat {
     @Id
     @GeneratedValue
     private long resultat_id;
-    private double temps;
+    private double point;
     private int position;
     @ManyToOne
     @JoinColumn(name = "participant_id")

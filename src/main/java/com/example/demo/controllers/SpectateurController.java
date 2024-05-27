@@ -34,15 +34,15 @@ public class SpectateurController {
     }
 
     @PostMapping
-    public ResponseEntity<Spectateur> inscrireSpectateur(@RequestBody Spectateur spectateur) {
-        Spectateur created = spectateurService.creerSpectateur(spectateur.getNom(), spectateur.getPrenom(), spectateur.getEmail());
+    public ResponseEntity<Spectateur> inscrire(@RequestBody Spectateur spectateur) {
+        Spectateur created = spectateurService.inscription(spectateur.getNom(), spectateur.getPrenom(), spectateur.getEmail());
         return ResponseEntity.ok(created);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> supprimerSpectateur(@PathVariable long id, HttpSession session) {
+    public ResponseEntity<String> supprimerCompte(@PathVariable long id, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            spectateurService.supprimerSpectateur(id);
+            spectateurService.supprimerCompte(id);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
@@ -62,6 +62,15 @@ public class SpectateurController {
     public ResponseEntity<?> reserverBillet(@RequestBody Billet billet, HttpSession session) {
         if (session.getAttribute("email") != null) {
             return ResponseEntity.ok(spectateurService.reserverBillet(billet));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @PostMapping("/billet/paiement")
+    public ResponseEntity<?> payerBillet(@RequestBody Billet billet, HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            return ResponseEntity.ok(spectateurService.payerBillet(billet));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }

@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface DelegationRepository extends CrudRepository<Delegation, Long> {
-
     Optional<Delegation> findByNom(String nom);
+    void deleteDelegationByNom(String nom);
+
 }

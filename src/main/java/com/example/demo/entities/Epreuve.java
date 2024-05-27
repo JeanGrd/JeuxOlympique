@@ -13,19 +13,19 @@ import java.util.Set;
 public class Epreuve {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private long epreuve_id;
-
     private String nom;
     private Date date;
     private int nb_delegations;
     private int nb_billets;
+    private String etat;
 
     @ManyToOne
     @JoinColumn(name = "infrastructure_id")
     private InfrastructureSportive infrastructureSportive;
 
-    @ManyToMany
+    @OneToMany
     @JoinTable(
             name = "epreuve_delegation",
             joinColumns = @JoinColumn(name = "epreuve_id"),

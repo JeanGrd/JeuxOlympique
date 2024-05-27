@@ -15,6 +15,11 @@ public class Billet {
     @GeneratedValue
     private long billet_id;
     private double prix;
+
+    /* 2 états possibles :
+        - Réservé
+        - Validé
+    */
     private String etat;
     private LocalDate dateValidite;
     @ManyToOne

@@ -45,10 +45,10 @@ public class OrganisateurController {
         }
     }
 
-    @DeleteMapping("/delegation/{id}")
-    public ResponseEntity<String> supprimerDelegation(@PathVariable long id, HttpSession session) {
+    @DeleteMapping("/delegation/{nom}")
+    public ResponseEntity<String> supprimerDelegation(@PathVariable String nom, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            organisateurService.supprimerDelegation(id);
+            organisateurService.supprimerDelegation(nom);
             return ResponseEntity.ok("Délégation supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
@@ -66,10 +66,30 @@ public class OrganisateurController {
         }
     }
 
-    @DeleteMapping("/epreuve/{id}")
-    public ResponseEntity<String> supprimerEpreuve(@PathVariable long id, HttpSession session) {
+    @DeleteMapping("/epreuve/{nom}")
+    public ResponseEntity<String> supprimerEpreuve(@PathVariable String nom, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            organisateurService.supprimerEpreuve(id);
+            organisateurService.supprimerEpreuve(nom);
+            return ResponseEntity.ok("Épreuve supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @DeleteMapping("/participant/{email}")
+    public ResponseEntity<String> supprimerParticipant(@PathVariable String email, HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.supprimerParticipant(email);
+            return ResponseEntity.ok("Épreuve supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @DeleteMapping("/controleur/{email}")
+    public ResponseEntity<String> supprimerControleur(@PathVariable String email, HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.supprimerControleur(email);
             return ResponseEntity.ok("Épreuve supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");

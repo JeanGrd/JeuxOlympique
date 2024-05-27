@@ -44,6 +44,7 @@ public class ParticipantService {
         if (ChronoUnit.DAYS.between(now, dateEpreuve) > 10) {
             if (epreuve.getNb_delegations() >= epreuve.getDelegations().size()) {
                 epreuve.getDelegations().add(participant.getDelegation());
+                epreuve.setEtat("Participe");
                 epreuveRepository.save(epreuve); // Sauvegarder les modifications
                 return participant;
             }
@@ -51,6 +52,26 @@ public class ParticipantService {
             throw new IllegalArgumentException("L'inscription est fermée 10 jours avant la date de l'épreuve.");
         }
         return participant;
+    }
+
+    public String desengagerEpreuve(long participantId, long epreuveId) {
+        Participant participant = participantRepository.findById(participantId)
+                .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'id : " + participantId));
+        Epreuve epreuve = epreuveRepository.findByEpreuve_idAndDelegations(epreuveId, participant.getDelegation())
+                .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveId));
+
+        LocalDate now = LocalDate.now();
+        LocalDate dateEpreuve = epreuve.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        boolean isForfait = ChronoUnit.DAYS.between(now, dateEpreuve) <= 10;
+
+        if (isForfait) {
+            epreuve.setEtat("Forfait");
+            epreuveRepository.save(epreuve);
+            return "Participant marqué comme forfait pour l'épreuve.";
+        } else {
+            epreuveRepository.delete(epreuve);
+            return "Désengagement réussi.";
+        }
     }
 
     public List<Epreuve> listerEpreuvesDisponibles() {

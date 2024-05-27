@@ -27,15 +27,33 @@ public class SpectateurService {
     private EpreuveRepository epreuveRepository;
 
     private static final int MAX_BILLETS_PAR_EPREUVE = 4;
-    private double remboursement;
+
+    public Spectateur inscription(String nom, String prenom, String email) {
+        Spectateur spectateur = new Spectateur();
+        spectateur.setNom(nom);
+        spectateur.setPrenom(prenom);
+        spectateur.setEmail(email);
+        return spectateurRepository.save(spectateur);
+    }
+
+    public void supprimerCompte(long id) {
+        spectateurRepository.deleteById(id);
+    }
 
     public String reserverBillet(Billet billet) {
         if (nombreBilletsPourEpreuve(billet.getSpectateur(), billet.getEpreuve()) >= MAX_BILLETS_PAR_EPREUVE) {
             return "Vous avez déjà réservé le nombre maximum de billets pour cette épreuve.";
         }
+
         billet.setEtat("Réservé");
         billetRepository.save(billet);
         return "Réservation confirmée.";
+    }
+
+    public String payerBillet(Billet billet) {
+        billet.setEtat("Validé");
+        billetRepository.save(billet);
+        return "Validation confirmée.";
     }
 
     public Billet annulerReservation(long billetId) {
@@ -44,7 +62,7 @@ public class SpectateurService {
             Billet billet = billetOptional.get();
             LocalDate dateActuelle = LocalDate.now();
             long joursAvantEpreuve = ChronoUnit.DAYS.between(dateActuelle, billet.getDateValidite());
-            this.remboursement = calculerRemboursement(joursAvantEpreuve, billet.getPrix());
+            double remboursement = calculerRemboursement(joursAvantEpreuve, billet.getPrix());
 
             billet.setEtat("Annulé");
             billetRepository.save(billet);
@@ -67,17 +85,6 @@ public class SpectateurService {
         return billetRepository.countAllBySpectateurAndEpreuve(spectateur, epreuve);
     }
 
-    public Spectateur creerSpectateur(String nom, String prenom, String email) {
-        Spectateur spectateur = new Spectateur();
-        spectateur.setNom(nom);
-        spectateur.setPrenom(prenom);
-        spectateur.setEmail(email);
-        return spectateurRepository.save(spectateur);
-    }
-
-    public void supprimerSpectateur(long id) {
-        spectateurRepository.deleteById(id);
-    }
 
     public List<Epreuve> consulterProgramme() {
         Iterable<Epreuve> epreuves = epreuveRepository.findAll();

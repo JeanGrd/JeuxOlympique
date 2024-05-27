@@ -88,10 +88,10 @@ public class AdminService {
         return participantRepository.save(participant);
     }
 
-    public Resultat creerResultat(int position, float temps, Epreuve epreuve, Participant participant) {
+    public Resultat creerResultat(int position, float point, Epreuve epreuve, Participant participant) {
         Resultat resultat = new Resultat();
         resultat.setPosition(position);
-        resultat.setTemps(temps);
+        resultat.setPoint(point);
         resultat.setEpreuve(epreuve);
         resultat.setParticipant(participant);
         return resultatRepository.save(resultat);
