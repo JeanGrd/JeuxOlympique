@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -23,7 +24,7 @@ public class AdminController {
 
     @PostMapping("/epreuves")
     public ResponseEntity<Epreuve> createEpreuve(@RequestBody Epreuve epreuve) {
-        Epreuve created = adminService.creerEpreuve(epreuve.getNom(), new Date(), epreuve.getNb_billets(), epreuve.getInfrastructureSportive());
+        Epreuve created = adminService.creerEpreuve(epreuve.getNom(), LocalDate.of(0,0,0), epreuve.getNb_billets(), epreuve.getInfrastructureSportive());
         return ResponseEntity.ok(created);
     }
 

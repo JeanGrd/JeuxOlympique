@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class OrganisateurService {
     @Autowired
     private ResultatRepository resultatRepository;
 
-    public Epreuve creerEpreuve(String nom, Date date, int nbDelegations, String infrastructureSportive) {
+    public Epreuve creerEpreuve(String nom, LocalDate date, int nbDelegations, String infrastructureSportive) {
         Epreuve epreuve = new Epreuve();
         epreuve.setNom(nom);
         epreuve.setDate(date);
@@ -110,7 +111,7 @@ public class OrganisateurService {
     }
 
 
-    public Epreuve setDate(Epreuve epreuve, Date date) {
+    public Epreuve setDate(Epreuve epreuve, LocalDate date) {
         epreuve.setDate(date);
         return epreuve;
     }

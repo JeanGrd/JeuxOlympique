@@ -21,7 +21,6 @@ public class Billet {
         - Validé
     */
     private String etat;
-    private LocalDate dateValidite;
     @ManyToOne
     @JoinColumn(name = "spectateur_id")
     private Spectateur spectateur;

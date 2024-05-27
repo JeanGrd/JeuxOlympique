@@ -40,7 +40,14 @@ public class SpectateurService {
         spectateurRepository.deleteById(id);
     }
 
-    public String reserverBillet(Billet billet) {
+    public String reserverBillet(String nomEpreuve, long idSpectateur) {
+        Billet billet = new Billet();
+        Spectateur spectateur = spectateurRepository.findById(idSpectateur).orElseThrow();
+        Epreuve epreuve = epreuveRepository.findByNom(nomEpreuve).orElseThrow();
+        billet.setSpectateur(spectateur);
+        billet.setEpreuve(epreuve);
+        billet.setPrix(epreuve.getPrix());
+
         if (nombreBilletsPourEpreuve(billet.getSpectateur(), billet.getEpreuve()) >= MAX_BILLETS_PAR_EPREUVE) {
             return "Vous avez déjà réservé le nombre maximum de billets pour cette épreuve.";
         }
@@ -50,7 +57,8 @@ public class SpectateurService {
         return "Réservation confirmée.";
     }
 
-    public String payerBillet(Billet billet) {
+    public String payerBillet(long billetId) {
+        Billet billet = billetRepository.findById(billetId).orElseThrow();
         billet.setEtat("Validé");
         billetRepository.save(billet);
         return "Validation confirmée.";
@@ -60,8 +68,9 @@ public class SpectateurService {
         Optional<Billet> billetOptional = billetRepository.findById(billetId);
         if (billetOptional.isPresent()) {
             Billet billet = billetOptional.get();
+            Epreuve epreuve = billet.getEpreuve();
             LocalDate dateActuelle = LocalDate.now();
-            long joursAvantEpreuve = ChronoUnit.DAYS.between(dateActuelle, billet.getDateValidite());
+            long joursAvantEpreuve = ChronoUnit.DAYS.between(dateActuelle, epreuve.getDate());
             double remboursement = calculerRemboursement(joursAvantEpreuve, billet.getPrix());
 
             billet.setEtat("Annulé");

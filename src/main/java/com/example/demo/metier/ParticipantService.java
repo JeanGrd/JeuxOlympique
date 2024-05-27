@@ -8,6 +8,7 @@ import com.example.demo.entities.Delegation;
 import com.example.demo.entities.Epreuve;
 import com.example.demo.entities.Participant;
 import com.example.demo.entities.Resultat;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,14 +39,19 @@ public class ParticipantService {
         Participant participant = participantRepository.findById(participantId).orElseThrow();
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
 
+        Delegation delegation = participant.getDelegation();
+        if (delegation == null) {
+            throw new IllegalStateException("Le participant n'est associé à aucune délégation.");
+        }
+
         // Vérifier si l'inscription est possible (avant 10 jours de la date de l'épreuve)
         LocalDate now = LocalDate.now();
-        LocalDate dateEpreuve = epreuve.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate dateEpreuve = epreuve.getDate();
         if (ChronoUnit.DAYS.between(now, dateEpreuve) > 10) {
             if (epreuve.getNb_delegations() >= epreuve.getDelegations().size()) {
                 epreuve.getDelegations().add(participant.getDelegation());
                 epreuve.setEtat("Participe");
-                epreuveRepository.save(epreuve); // Sauvegarder les modifications
+                epreuveRepository.save(epreuve);
                 return participant;
             }
         } else {
@@ -54,6 +60,7 @@ public class ParticipantService {
         return participant;
     }
 
+    /**
     public String desengagerEpreuve(long participantId, long epreuveId) {
         Participant participant = participantRepository.findById(participantId)
                 .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'id : " + participantId));
@@ -72,7 +79,7 @@ public class ParticipantService {
             epreuveRepository.delete(epreuve);
             return "Désengagement réussi.";
         }
-    }
+    }**/
 
     public List<Epreuve> listerEpreuvesDisponibles() {
         // Utilisation de Java Streams pour convertir Iterable en List
@@ -92,5 +99,11 @@ public class ParticipantService {
         long delegationId = participant.getDelegation().getDelegation_id();
         Delegation delegation = delegationRepository.findById(delegationId).orElseThrow();
         return resultatRepository.findByParticipant_Delegation(delegation);
+    }
+
+    public List<Epreuve> consulterProgramme() {
+        Iterable<Epreuve> epreuves = epreuveRepository.findAll();
+        return StreamSupport.stream(epreuves.spliterator(), false)
+                .collect(Collectors.toList());
     }
 }

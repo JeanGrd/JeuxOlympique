@@ -46,6 +46,7 @@ public class ParticipantController {
         }
     }
 
+    /**
     @PostMapping("/inscrire")
     public ResponseEntity<Participant> inscrireEpreuve(@RequestParam long participantId, @RequestParam long epreuveId, HttpSession session) {
         if (session.getAttribute("participantEmail") != null) {
@@ -55,8 +56,9 @@ public class ParticipantController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
+     **/
 
-    @PostMapping("/desengager/{epreuveId}")
+    /**@PostMapping("/desengager/{epreuveId}")
     public ResponseEntity<String> desengagerEpreuve(@RequestParam long participantId, @RequestParam long epreuveId, HttpSession session) {
         if (session.getAttribute("participantEmail") != null) {
             participantService.desengagerEpreuve(participantId, epreuveId);
@@ -64,7 +66,7 @@ public class ParticipantController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOK");
         }
-    }
+    }**/
 
     @GetMapping("/resultats/participant")
     public ResponseEntity<List<Resultat>> consulterResultatsParticipant(@RequestParam long participantId, HttpSession session) {

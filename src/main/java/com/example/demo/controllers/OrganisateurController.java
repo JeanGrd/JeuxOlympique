@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -56,7 +57,7 @@ public class OrganisateurController {
     }
 
     @PostMapping("/epreuve")
-    public ResponseEntity<Epreuve> creerEpreuve(@RequestParam String nom, @RequestParam Date date,
+    public ResponseEntity<Epreuve> creerEpreuve(@RequestParam String nom, @RequestParam LocalDate date,
                                                 @RequestParam int nbPlaces, @RequestParam String infrastructure, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
             Epreuve created = organisateurService.creerEpreuve(nom, date, nbPlaces, infrastructure);

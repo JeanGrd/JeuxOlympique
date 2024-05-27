@@ -18,6 +18,7 @@ public interface EpreuveRepository extends CrudRepository<Epreuve, Long> {
     int getTotalVentes();
     Optional<Epreuve> findByNom(String nom);
 
-    Optional<Epreuve> findByEpreuve_idAndDelegations(long id, Delegation delegation);
+
+    //Optional<Epreuve> findByEpreuve_idAndDelegations(long id, Delegation delegation);
 
 }

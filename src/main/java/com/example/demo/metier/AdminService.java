@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.swing.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Service
@@ -53,7 +54,7 @@ public class AdminService {
         return delegationRepository.save(delegation);
     }
 
-    public Epreuve creerEpreuve(String nom, Date date, int nbPlaces, InfrastructureSportive infrastructure) {
+    public Epreuve creerEpreuve(String nom, LocalDate date, int nbPlaces, InfrastructureSportive infrastructure) {
         Epreuve epreuve = new Epreuve();
         epreuve.setNom(nom);
         epreuve.setDate(date);
