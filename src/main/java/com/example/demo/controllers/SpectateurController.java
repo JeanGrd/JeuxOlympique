@@ -70,7 +70,7 @@ public class SpectateurController {
     @PostMapping("/billet/paiement")
     public ResponseEntity<?> payerBillet(@RequestBody Billet billet, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(spectateurService.payerBillet(billet.getBillet_id()));
+            return ResponseEntity.ok(spectateurService.payerBillet(billet.getBilletId()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }

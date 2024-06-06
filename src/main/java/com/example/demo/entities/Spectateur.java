@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Spectateur {
     @Id
     @GeneratedValue
-    private long spectateur_id;
+    private long spectateurId;
     private String nom;
     private String prenom;
     private String email;

@@ -94,7 +94,6 @@ public class SpectateurService {
         return billetRepository.countAllBySpectateurAndEpreuve(spectateur, epreuve);
     }
 
-
     public List<Epreuve> consulterProgramme() {
         Iterable<Epreuve> epreuves = epreuveRepository.findAll();
         return StreamSupport.stream(epreuves.spliterator(), false)

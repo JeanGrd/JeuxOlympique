@@ -12,13 +12,13 @@ public class Resultat {
 
     @Id
     @GeneratedValue
-    private long resultat_id;
+    private long resultatId;
     private double point;
     private int position;
     @ManyToOne
-    @JoinColumn(name = "participant_id")
+    @JoinColumn(name = "participantId")
     private Participant participant;
     @ManyToOne
-    @JoinColumn(name = "epreuve_id")
+    @JoinColumn(name = "epreuveId")
     private Epreuve epreuve;
 }

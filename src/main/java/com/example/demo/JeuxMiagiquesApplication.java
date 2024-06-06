@@ -8,7 +8,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @SpringBootApplication
 public class JeuxMiagiquesApplication implements CommandLineRunner {
@@ -65,6 +64,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
 
         // Création d'un contrôleur
         organisateurService.creerControleur("Brown", "Charlie", "charlie.brown@example.com");
+
         /*
          *
          * Spectateur part
@@ -80,11 +80,11 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         System.out.println(spectateurService.consulterProgramme());
 
         // Use case: Supprimer son compte
-        spectateurService.supprimerCompte(Ana.getSpectateur_id());
+        spectateurService.supprimerCompte(Ana.getSpectateurId());
 
         // Use case: Réserver des billets pour assister aux épreuves
-        spectateurService.reserverBillet("test", Jean.getSpectateur_id());
-        spectateurService.reserverBillet("100m sprint", Jean.getSpectateur_id());
+        spectateurService.reserverBillet("test", Jean.getSpectateurId());
+        spectateurService.reserverBillet("100m sprint", Jean.getSpectateurId());
 
         // Use case: payer en ligne
         spectateurService.payerBillet(1);
@@ -102,15 +102,16 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         System.out.println(participantService.consulterProgramme());
 
         // Use case: S'inscrire à des épreuves au nom de sa délégation
-        participantService.inscrireEpreuve(Roger.getParticipant_id(), e.getEpreuve_id());
-        participantService.inscrireEpreuve(Christina.getParticipant_id(), e.getEpreuve_id());
-        participantService.inscrireEpreuve(Lans.getParticipant_id(), e.getEpreuve_id());
+        participantService.inscrireEpreuve(Roger.getParticipantId(), e.getEpreuveId());
+        participantService.inscrireEpreuve(Christina.getParticipantId(), e.getEpreuveId());
+
+        participantService.desengagerEpreuve(Roger.getParticipantId(), e.getEpreuveId());
 
         // Use case: consulter ses résultats
-        System.out.println(participantService.consulterResultatsParticipant(Roger.getParticipant_id()));
+        System.out.println(participantService.consulterResultatsParticipant(Roger.getParticipantId()));
 
         // Use case: classement de sa délégation
-        System.out.println(participantService.consulterResultatsParDelegation(Roger.getParticipant_id()));
+        System.out.println(participantService.consulterResultatsParDelegation(Roger.getParticipantId()));
 
         /*
          *

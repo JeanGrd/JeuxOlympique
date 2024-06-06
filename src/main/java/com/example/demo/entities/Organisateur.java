@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Organisateur {
     @Id
     @GeneratedValue
-    private long organisateur_id;
+    private long organisateurId;
     private String nom;
     private String prenom;
     private String email;

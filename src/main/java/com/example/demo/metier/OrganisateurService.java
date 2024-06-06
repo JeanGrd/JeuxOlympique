@@ -41,6 +41,7 @@ public class OrganisateurService {
         return epreuveRepository.save(epreuve);
     }
 
+
     public boolean verifierEmailExist(String email) {
         return organisateurRepository.findByEmail(email).isPresent();
     }
@@ -125,8 +126,12 @@ public class OrganisateurService {
         return "Ok";
     }
 
-    public Epreuve setNbBillets(Epreuve epreuve, int nbBillets) {
-        epreuve.setNb_billets(nbBillets);
+    public Epreuve setNbBillets(Epreuve epreuve, int nbBillets) throws Exception {
+        if (epreuve.getInfrastructureSportive().getCapacite() > nbBillets){
+            throw new Exception("Capacité insufisante");
+        } else {
+            epreuve.setNb_billets(nbBillets);
+        }
         return epreuve;
     }
 

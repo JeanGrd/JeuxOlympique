@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 @Entity
@@ -13,7 +11,7 @@ public class Billet {
 
     @Id
     @GeneratedValue
-    private long billet_id;
+    private long billetId;
     private double prix;
 
     /* 2 états possibles :
@@ -22,10 +20,10 @@ public class Billet {
     */
     private String etat;
     @ManyToOne
-    @JoinColumn(name = "spectateur_id")
+    @JoinColumn(name = "spectateurId")
     private Spectateur spectateur;
     @ManyToOne
-    @JoinColumn(name = "epreuve_id")
+    @JoinColumn(name = "epreuveId")
     private Epreuve epreuve;
 
 }

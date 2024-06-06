@@ -14,7 +14,7 @@ public class InfrastructureSportive {
 
     @Id
     @GeneratedValue
-    private long infrastructure_id;
+    private long infrastructureId;
     private String nom;
     private String adresse;
     private int capacite;

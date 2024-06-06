@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Controleur {
     @Id
     @GeneratedValue
-    private long controleur_id;
+    private long controleurId;
     private String nom;
     private String prenom;
     private String email;

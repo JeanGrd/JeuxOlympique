@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -13,7 +14,7 @@ public class Delegation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long delegation_id;
+    private long delegationId;
 
     private String nom;
     private int nb_medaille_or;

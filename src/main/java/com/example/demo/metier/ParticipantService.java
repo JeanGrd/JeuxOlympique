@@ -1,19 +1,13 @@
 package com.example.demo.metier;
 
-import com.example.demo.dao.DelegationRepository;
-import com.example.demo.dao.EpreuveRepository;
-import com.example.demo.dao.ParticipantRepository;
-import com.example.demo.dao.ResultatRepository;
-import com.example.demo.entities.Delegation;
-import com.example.demo.entities.Epreuve;
-import com.example.demo.entities.Participant;
-import com.example.demo.entities.Resultat;
+import com.example.demo.dao.*;
+import com.example.demo.entities.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +21,8 @@ public class ParticipantService {
     @Autowired
     private EpreuveRepository epreuveRepository;
     @Autowired
+    private ParticipeRepository participeRepository;
+    @Autowired
     private ResultatRepository resultatRepository;
     @Autowired
     private DelegationRepository delegationRepository;
@@ -35,7 +31,7 @@ public class ParticipantService {
         return participantRepository.findByEmail(email).isPresent();
     }
 
-    public Participant inscrireEpreuve(long participantId, long epreuveId) {
+    public void inscrireEpreuve(long participantId, long epreuveId) {
         Participant participant = participantRepository.findById(participantId).orElseThrow();
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
 
@@ -48,38 +44,64 @@ public class ParticipantService {
         LocalDate now = LocalDate.now();
         LocalDate dateEpreuve = epreuve.getDate();
         if (ChronoUnit.DAYS.between(now, dateEpreuve) > 10) {
-            if (epreuve.getNb_delegations() >= epreuve.getDelegations().size()) {
-                epreuve.getDelegations().add(participant.getDelegation());
-                epreuve.setEtat("Participe");
-                epreuveRepository.save(epreuve);
-                return participant;
+            if (epreuve.getNb_delegations() >= epreuve.getNb_delegations()) {
+                // Vérifier si la délégation est déjà inscrite à cette épreuve
+                boolean alreadyInscribed = participeRepository.stream()
+                        .anyMatch(participes -> participes.getDelegation().getDelegationId() == delegation.getDelegationId());
+                if (!alreadyInscribed) {
+                    Participe participes = new Participe();
+                    participes.setEpreuve(epreuve);
+                    participes.setDelegation(delegation);
+                    participes.setEtat("Participe");
+
+                    epreuve.getParticipes().add(participes);
+                    delegation.getParticipes().add(participes);
+
+                    epreuveRepository.save(epreuve);
+                    delegationRepository.save(delegation);
+                    participeRepository.save(participes);
+
+                } else {
+                    throw new IllegalArgumentException("La délégation est déjà inscrite à cette épreuve.");
+                }
             }
         } else {
             throw new IllegalArgumentException("L'inscription est fermée 10 jours avant la date de l'épreuve.");
         }
-        return participant;
     }
 
-    /**
     public String desengagerEpreuve(long participantId, long epreuveId) {
+        // Récupérer l'épreuve
+        Epreuve epreuve = epreuveRepository.findById(epreuveId)
+                .orElseThrow(() -> new EntityNotFoundException("Epreuve not found"));
         Participant participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'id : " + participantId));
-        Epreuve epreuve = epreuveRepository.findByEpreuve_idAndDelegations(epreuveId, participant.getDelegation())
-                .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveId));
+                .orElseThrow(() -> new EntityNotFoundException("Participant not found"));
+        Delegation delegation = delegationRepository.findById(participant.getDelegation().getDelegationId())
+                .orElseThrow(() -> new EntityNotFoundException("Epreuve not found"));
 
+        // Vérifier si la date de l'épreuve est dans les 10 jours
         LocalDate now = LocalDate.now();
-        LocalDate dateEpreuve = epreuve.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        boolean isForfait = ChronoUnit.DAYS.between(now, dateEpreuve) <= 10;
+        long daysBetween = ChronoUnit.DAYS.between(now, epreuve.getDate());
 
-        if (isForfait) {
-            epreuve.setEtat("Forfait");
-            epreuveRepository.save(epreuve);
-            return "Participant marqué comme forfait pour l'épreuve.";
+        // Récupérer la participation
+        Participe participation = participeRepository.findByDelegation_DelegationIdAndEpreuve_EpreuveId(delegation.getDelegationId(), epreuveId)
+                .orElseThrow(() -> new EntityNotFoundException("Participation not found"));
+
+        if (daysBetween <= 10) {
+            // Si dans les 10 jours, marquer comme forfait
+            participation.setEtat("forfait");
+            participeRepository.save(participation);
+            return "Participant désengagé et marqué comme forfait";
         } else {
-            epreuveRepository.delete(epreuve);
-            return "Désengagement réussi.";
+            System.out.println(participation.getDelegation().getDelegationId());
+            System.out.println(participation.getEpreuve().getEpreuveId());
+            System.out.println(participation.getId());
+
+            // Sinon, supprimer la participation
+            participeRepository.delete(participation);
+            return "Participant désengagé avec succès";
         }
-    }**/
+    }
 
     public List<Epreuve> listerEpreuvesDisponibles() {
         // Utilisation de Java Streams pour convertir Iterable en List
@@ -96,7 +118,7 @@ public class ParticipantService {
     // Méthode pour consulter les résultats de la délégation d'un participant
     public List<Resultat> consulterResultatsParDelegation(long participantId) {
         Participant participant = participantRepository.findById(participantId).orElseThrow();
-        long delegationId = participant.getDelegation().getDelegation_id();
+        long delegationId = participant.getDelegation().getDelegationId();
         Delegation delegation = delegationRepository.findById(delegationId).orElseThrow();
         return resultatRepository.findByParticipant_Delegation(delegation);
     }
