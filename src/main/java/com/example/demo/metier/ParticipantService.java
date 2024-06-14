@@ -36,29 +36,26 @@ public class ParticipantService {
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
 
         Delegation delegation = participant.getDelegation();
+
         if (delegation == null) {
             throw new IllegalStateException("Le participant n'est associé à aucune délégation.");
         }
 
+        boolean alreadyExists = participeRepository.findByDelegation_DelegationIdAndEpreuve_EpreuveId(delegation.getDelegationId(), epreuveId).isPresent();
         // Vérifier si l'inscription est possible (avant 10 jours de la date de l'épreuve)
         LocalDate now = LocalDate.now();
         LocalDate dateEpreuve = epreuve.getDate();
         if (ChronoUnit.DAYS.between(now, dateEpreuve) > 10) {
             if (epreuve.getNb_delegations() >= epreuve.getNb_delegations()) {
-                // Vérifier si la délégation est déjà inscrite à cette épreuve
-                boolean alreadyInscribed = participeRepository.stream()
-                        .anyMatch(participes -> participes.getDelegation().getDelegationId() == delegation.getDelegationId());
-                if (!alreadyInscribed) {
+                if (alreadyExists) {
                     Participe participes = new Participe();
                     participes.setEpreuve(epreuve);
                     participes.setDelegation(delegation);
                     participes.setEtat("Participe");
 
-                    epreuve.getParticipes().add(participes);
-                    delegation.getParticipes().add(participes);
+                    participes.setDelegation(delegation);
+                    participes.setEpreuve(epreuve);
 
-                    epreuveRepository.save(epreuve);
-                    delegationRepository.save(delegation);
                     participeRepository.save(participes);
 
                 } else {
