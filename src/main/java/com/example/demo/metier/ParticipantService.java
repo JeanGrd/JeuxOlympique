@@ -47,7 +47,7 @@ public class ParticipantService {
         LocalDate dateEpreuve = epreuve.getDate();
         if (ChronoUnit.DAYS.between(now, dateEpreuve) > 10) {
             if (epreuve.getNb_delegations() >= epreuve.getNb_delegations()) {
-                if (alreadyExists) {
+                if (!alreadyExists) {
                     Participe participes = new Participe();
                     participes.setEpreuve(epreuve);
                     participes.setDelegation(delegation);

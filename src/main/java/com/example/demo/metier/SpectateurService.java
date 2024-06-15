@@ -74,6 +74,7 @@ public class SpectateurService {
             double remboursement = calculerRemboursement(joursAvantEpreuve, billet.getPrix());
 
             billet.setEtat("Annulé");
+            billet.setRemboursement(remboursement);
             billetRepository.save(billet);
             return billet;
         }

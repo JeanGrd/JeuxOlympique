@@ -28,11 +28,13 @@ public class OrganisateurService {
     @Autowired
     private ResultatRepository resultatRepository;
 
-    public Epreuve creerEpreuve(String nom, LocalDate date, int nbDelegations, String infrastructureSportive) {
+    public Epreuve creerEpreuve(String nom, LocalDate date, int nbDelegations, int nbBillets, float prix, String infrastructureSportive) {
         Epreuve epreuve = new Epreuve();
         epreuve.setNom(nom);
         epreuve.setDate(date);
+        epreuve.setNb_billets(nbBillets);
         epreuve.setNb_delegations(nbDelegations);
+        epreuve.setPrix(prix);
 
         InfrastructureSportive infra = infrastructureSportiveRepository.findByNom(infrastructureSportive)
                 .orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec le nom : " + infrastructureSportive));
@@ -73,8 +75,6 @@ public class OrganisateurService {
     public void supprimerEpreuve(String epreuveNom) {
         Epreuve epreuve = epreuveRepository.findByNom(epreuveNom)
                 .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec le nom : " + epreuveNom));
-
-        // Supprimez toutes les relations avec les délégations ici si nécessaire
 
         epreuveRepository.delete(epreuve);
     }
@@ -117,17 +117,20 @@ public class OrganisateurService {
         return epreuve;
     }
 
-    public String setNbParticipant(Epreuve epreuve, int nbParticipant) {
+    public String setNbParticipant(long epreuveId, int nbParticipant) {
+        Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
         int tailleMax = epreuve.getInfrastructureSportive().getCapacite();
         if(nbParticipant > tailleMax) {
             return "Impossible";
         }
         epreuve.setNb_delegations(nbParticipant);
+        epreuveRepository.save(epreuve);
         return "Ok";
     }
 
-    public Epreuve setNbBillets(Epreuve epreuve, int nbBillets) throws Exception {
-        if (epreuve.getInfrastructureSportive().getCapacite() > nbBillets){
+    public Epreuve setNbBillets(long epreuveId, int nbBillets) throws Exception {
+        Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
+        if (epreuve.getInfrastructureSportive().getCapacite() < nbBillets){
             throw new Exception("Capacité insufisante");
         } else {
             epreuve.setNb_billets(nbBillets);
@@ -162,37 +165,28 @@ public class OrganisateurService {
         Epreuve epreuve = epreuveRepository.findById(epreuveId)
                 .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveId));
         Participant participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("Particpant non trouvée avec l'id : " + participantId));
+                .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'id : " + participantId));
+
         resultat.setPoint(point);
         resultat.setPosition(position);
         resultat.setEpreuve(epreuve);
         resultat.setParticipant(participant);
+
         resultatRepository.save(resultat);
+
+        if (position >= 0 && position <= 2) {
+            Delegation delegation = resultat.getParticipant().getDelegation();
+            if (position == 0) {
+                delegation.setNb_medaille_or(delegation.getNb_medaille_or() + 1);
+            } else if (position == 1) {
+                delegation.setNb_medaille_argent(delegation.getNb_medaille_argent() + 1);
+            } else {
+                delegation.setNb_medaille_bronze(delegation.getNb_medaille_bronze() + 1);
+            }
+            delegationRepository.save(delegation);
+        }
+
         return "Ok";
     }
 
-    public String updateResultatGlobal(long epreuveId) {
-        Epreuve epreuve = epreuveRepository.findById(epreuveId)
-                .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveId));
-
-        List<Resultat> resultats = resultatRepository.findByEpreuveOrderByPositionAsc(epreuve);
-
-        if (resultats.size() < 3) {
-            return "Pas assez de résultats pour déterminer les trois premiers.";
-        }
-
-        Delegation orDelegation = resultats.get(0).getParticipant().getDelegation();
-        Delegation argentDelegation = resultats.get(1).getParticipant().getDelegation();
-        Delegation bronzeDelegation = resultats.get(2).getParticipant().getDelegation();
-
-        orDelegation.setNb_medaille_or(orDelegation.getNb_medaille_or() + 1);
-        argentDelegation.setNb_medaille_argent(argentDelegation.getNb_medaille_argent() + 1);
-        bronzeDelegation.setNb_medaille_bronze(bronzeDelegation.getNb_medaille_bronze() + 1);
-
-        delegationRepository.save(orDelegation);
-        delegationRepository.save(argentDelegation);
-        delegationRepository.save(bronzeDelegation);
-
-        return "Classement mis à jour avec succès";
-    }
 }

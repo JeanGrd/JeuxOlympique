@@ -58,9 +58,11 @@ public class OrganisateurController {
 
     @PostMapping("/epreuve")
     public ResponseEntity<Epreuve> creerEpreuve(@RequestParam String nom, @RequestParam LocalDate date,
-                                                @RequestParam int nbPlaces, @RequestParam String infrastructure, HttpSession session) {
+                                                @RequestParam int nbPlaces, @RequestParam int nbBillets,
+                                                @RequestParam float prix,
+                                                @RequestParam String infrastructure, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            Epreuve created = organisateurService.creerEpreuve(nom, date, nbPlaces, infrastructure);
+            Epreuve created = organisateurService.creerEpreuve(nom, date, nbPlaces, nbBillets, prix,  infrastructure);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);

@@ -13,6 +13,7 @@ public class Billet {
     @GeneratedValue
     private long billetId;
     private double prix;
+    private double remboursement;
 
     /* 2 états possibles :
         - Réservé

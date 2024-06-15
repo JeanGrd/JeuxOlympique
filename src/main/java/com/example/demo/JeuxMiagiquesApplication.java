@@ -48,8 +48,8 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          */
 
         // Création d'une épreuve
-        Epreuve e = organisateurService.creerEpreuve("100m sprint", LocalDate.of(2025, 12, 2), 500, "Stade Olympique");
-        organisateurService.creerEpreuve("test", LocalDate.of(2025, 12, 2), 1500, "Stade Toulousain");
+        Epreuve e = organisateurService.creerEpreuve("100m sprint", LocalDate.of(2025, 12, 2), 500, 300,115.5F, "Stade Olympique");
+        organisateurService.creerEpreuve("test", LocalDate.of(2025, 12, 2), 1500, 300, 75, "Stade Toulousain");
         Participant Lans = organisateurService.creerParticipant("Robert", "Lans", "robert@lans.fr");
         Participant Roger = organisateurService.creerParticipant("Dons", "Roger", "dons@roger.fr");
         Participant Christina = organisateurService.creerParticipant("Garcia", "Christina", "garcia@christina.fr");
@@ -61,6 +61,11 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         organisateurService.setDelegation("dons@roger.fr", "USA");
         organisateurService.setDelegation("garcia@christina.fr", "France");
         organisateurService.setDelegation("robert@lans.fr", "USA");
+
+        // Mettre en place le nombre de billets
+        organisateurService.setNbBillets(e.getEpreuveId(), 30);
+
+        organisateurService.setNbParticipant(e.getEpreuveId(), 450);
 
         // Création d'un contrôleur
         organisateurService.creerControleur("Brown", "Charlie", "charlie.brown@example.com");
@@ -119,9 +124,11 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          *
          */
 
-
+        controleurService.verifierBillet(1);
         //organisateurService.supprimerEpreuve("100m sprint");
         //organisateurService.supprimerDelegation("USA");
+
+        organisateurService.setResultat(12, 1, e.getEpreuveId(), Roger.getParticipantId());
 
         System.out.println(organisateurService.getTotalVentes());
         System.out.println(organisateurService.getTotalPlacesDisponibles());

@@ -46,18 +46,6 @@ public class ParticipantController {
         }
     }
 
-    /**
-    @PostMapping("/inscrire")
-    public ResponseEntity<Participant> inscrireEpreuve(@RequestParam long participantId, @RequestParam long epreuveId, HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
-            Participant participant = participantService.inscrireEpreuve(participantId, epreuveId);
-            return ResponseEntity.ok(participant);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-    }
-     **/
-
     /**@PostMapping("/desengager/{epreuveId}")
     public ResponseEntity<String> desengagerEpreuve(@RequestParam long participantId, @RequestParam long epreuveId, HttpSession session) {
         if (session.getAttribute("participantEmail") != null) {
@@ -85,6 +73,15 @@ public class ParticipantController {
             return ResponseEntity.ok(resultats);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
+    @GetMapping("/programme")
+    public ResponseEntity<?> consulterProgramme(HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            return ResponseEntity.ok(participantService.consulterProgramme());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
