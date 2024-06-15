@@ -43,6 +43,22 @@ public class OrganisateurService {
         return epreuveRepository.save(epreuve);
     }
 
+    public Epreuve modifierpreuve(long epreuveId, String nom, LocalDate date, int nbDelegations, int nbBillets, float prix, String infrastructureSportive) {
+        Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
+        epreuve.setNom(nom);
+        epreuve.setDate(date);
+        epreuve.setNb_billets(nbBillets);
+        epreuve.setNb_delegations(nbDelegations);
+        epreuve.setPrix(prix);
+
+        InfrastructureSportive infra = infrastructureSportiveRepository.findByNom(infrastructureSportive)
+                .orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec le nom : " + infrastructureSportive));
+
+        epreuve.setInfrastructureSportive(infra);
+        return epreuveRepository.save(epreuve);
+    }
+
+
 
     public boolean verifierEmailExist(String email) {
         return organisateurRepository.findByEmail(email).isPresent();
