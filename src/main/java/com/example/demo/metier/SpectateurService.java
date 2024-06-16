@@ -40,9 +40,15 @@ public class SpectateurService {
         spectateurRepository.deleteByEmail(email);
     }
 
-    public String reserverBillet(String nomEpreuve, long idSpectateur) {
+    public List<Epreuve> consulterProgramme() {
+        Iterable<Epreuve> epreuves = epreuveRepository.findAll();
+        return StreamSupport.stream(epreuves.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    public String reserverBillet(String nomEpreuve, String email) {
         Billet billet = new Billet();
-        Spectateur spectateur = spectateurRepository.findById(idSpectateur).orElseThrow();
+        Spectateur spectateur = spectateurRepository.findByEmail(email).orElseThrow();
         Epreuve epreuve = epreuveRepository.findByNom(nomEpreuve).orElseThrow();
         billet.setSpectateur(spectateur);
         billet.setEpreuve(epreuve);
@@ -93,12 +99,6 @@ public class SpectateurService {
 
     private int nombreBilletsPourEpreuve(Spectateur spectateur, Epreuve epreuve) {
         return billetRepository.countAllBySpectateurAndEpreuve(spectateur, epreuve);
-    }
-
-    public List<Epreuve> consulterProgramme() {
-        Iterable<Epreuve> epreuves = epreuveRepository.findAll();
-        return StreamSupport.stream(epreuves.spliterator(), false)
-                .collect(Collectors.toList());
     }
 
     public boolean verifierEmailExist(String email) {

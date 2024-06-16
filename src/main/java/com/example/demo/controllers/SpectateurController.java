@@ -39,7 +39,7 @@ public class SpectateurController {
         return ResponseEntity.ok(created);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<String> supprimerCompte(HttpSession session) {
         if (session.getAttribute("email") != null) {
             spectateurService.supprimerCompte(session.getAttribute("email").toString());
@@ -61,7 +61,7 @@ public class SpectateurController {
     @PostMapping("/billet")
     public ResponseEntity<?> reserverBillet(@RequestBody String nomEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(spectateurService.reserverBillet(nomEpreuve, 1));
+            return ResponseEntity.ok(spectateurService.reserverBillet(nomEpreuve, session.getAttribute("email").toString()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
