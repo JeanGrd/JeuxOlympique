@@ -11,10 +11,11 @@ import lombok.Setter;
 @Setter
 @Entity
 public class Spectateur {
+
     @Id
-    @GeneratedValue
+    private String email;
     private long spectateurId;
     private String nom;
     private String prenom;
-    private String email;
+
 }

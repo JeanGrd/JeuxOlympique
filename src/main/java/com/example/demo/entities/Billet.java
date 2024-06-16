@@ -21,7 +21,7 @@ public class Billet {
     */
     private String etat;
     @ManyToOne
-    @JoinColumn(name = "spectateurId")
+    @JoinColumn(name = "spectateur_email")
     private Spectateur spectateur;
     @ManyToOne
     @JoinColumn(name = "epreuveId")

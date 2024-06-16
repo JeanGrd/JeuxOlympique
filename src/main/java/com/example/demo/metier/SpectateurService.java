@@ -6,12 +6,14 @@ import com.example.demo.dao.EpreuveRepository;
 import com.example.demo.entities.Billet;
 import com.example.demo.entities.Epreuve;
 import com.example.demo.entities.Spectateur;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -36,6 +38,7 @@ public class SpectateurService {
         return spectateurRepository.save(spectateur);
     }
 
+    @Transactional
     public void supprimerCompte(String email) {
         spectateurRepository.deleteByEmail(email);
     }
@@ -46,10 +49,10 @@ public class SpectateurService {
                 .collect(Collectors.toList());
     }
 
-    public String reserverBillet(String nomEpreuve, String email) {
+    public String reserverBillet(long idEpreuve, String email) {
         Billet billet = new Billet();
         Spectateur spectateur = spectateurRepository.findByEmail(email).orElseThrow();
-        Epreuve epreuve = epreuveRepository.findByNom(nomEpreuve).orElseThrow();
+        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow();
         billet.setSpectateur(spectateur);
         billet.setEpreuve(epreuve);
         billet.setPrix(epreuve.getPrix());
@@ -65,15 +68,22 @@ public class SpectateurService {
 
     public String payerBillet(long billetId) {
         Billet billet = billetRepository.findById(billetId).orElseThrow();
-        billet.setEtat("Validé");
-        billetRepository.save(billet);
-        return "Validation confirmée.";
+        if (Objects.equals(billet.getEtat(), "Réservé")) {
+            billet.setEtat("Payé");
+            billetRepository.save(billet);
+            return "Paiement confirmée.";
+        } else if (Objects.equals(billet.getEtat(), "Payé")) {
+            return "Ce billet a déjà été payé";
+        } else if (Objects.equals(billet.getEtat(), "Annulé")) {
+            return "Ce billet a été annulé";
+        } else {
+            return "Une erreur est survenue sur votre billet";
+        }
     }
 
-    public Billet annulerReservation(long billetId) {
-        Optional<Billet> billetOptional = billetRepository.findById(billetId);
-        if (billetOptional.isPresent()) {
-            Billet billet = billetOptional.get();
+    public String annulerReservation(long billetId, String email) {
+        Billet billet = billetRepository.findByBilletIdAndSpectateur_Email(billetId, email).orElseThrow();
+        if (Objects.equals(billet.getEtat(), "Payé")) {
             Epreuve epreuve = billet.getEpreuve();
             LocalDate dateActuelle = LocalDate.now();
             long joursAvantEpreuve = ChronoUnit.DAYS.between(dateActuelle, epreuve.getDate());
@@ -82,9 +92,16 @@ public class SpectateurService {
             billet.setEtat("Annulé");
             billet.setRemboursement(remboursement);
             billetRepository.save(billet);
-            return billet;
+            return "Votre billet est annulé et vous avez été remboursé de : " + remboursement + " €";
+        } else if (Objects.equals(billet.getEtat(), "Réservé")) {
+            billet.setEtat("Annulé");
+            billetRepository.save(billet);
+            return "Votre billet a été annulé avec succès";
+        } else if (Objects.equals(billet.getEtat(), "Annulé")) {
+            return "Votre billet a déjà été annulé";
+        } else {
+            return "Un problème est survenu sur votre billet";
         }
-        return null;
     }
 
     private double calculerRemboursement(long joursAvantEpreuve, double prix) {
