@@ -34,19 +34,15 @@ public class SpectateurController {
     }
 
     @PostMapping
-    public ResponseEntity<?> inscrire(@RequestBody String nom, String prenom, String email) {
-        try {
-            Spectateur created = spectateurService.inscription(nom, prenom, email);
-            return ResponseEntity.ok(created);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Spectateur> inscrire(@RequestBody String nom, String prenom, String email) {
+        Spectateur created = spectateurService.inscription(nom, prenom, email);
+        return ResponseEntity.ok(created);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> supprimerCompte(@PathVariable long id, HttpSession session) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> supprimerCompte(HttpSession session) {
         if (session.getAttribute("email") != null) {
-            spectateurService.supprimerCompte(id);
+            spectateurService.supprimerCompte(session.getAttribute("email").toString());
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");

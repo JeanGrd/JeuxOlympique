@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface SpectateurRepository extends CrudRepository<Spectateur, Long> {
     Optional<Spectateur> findByEmail(String email);
+    void deleteByEmail(String email);
 }

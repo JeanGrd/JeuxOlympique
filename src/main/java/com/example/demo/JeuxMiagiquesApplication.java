@@ -85,7 +85,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         System.out.println(spectateurService.consulterProgramme());
 
         // Use case: Supprimer son compte
-        spectateurService.supprimerCompte(Ana.getSpectateurId());
+        spectateurService.supprimerCompte(Ana.getEmail());
 
         // Use case: Réserver des billets pour assister aux épreuves
         spectateurService.reserverBillet("test", Jean.getSpectateurId());

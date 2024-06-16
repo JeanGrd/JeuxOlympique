@@ -36,8 +36,8 @@ public class SpectateurService {
         return spectateurRepository.save(spectateur);
     }
 
-    public void supprimerCompte(long id) {
-        spectateurRepository.deleteById(id);
+    public void supprimerCompte(String email) {
+        spectateurRepository.deleteByEmail(email);
     }
 
     public String reserverBillet(String nomEpreuve, long idSpectateur) {
