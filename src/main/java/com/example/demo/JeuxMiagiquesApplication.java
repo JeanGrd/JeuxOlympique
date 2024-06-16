@@ -78,7 +78,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
 
         // Use case: Il peut s’inscrire sur l’application
         Spectateur Ana = spectateurService.inscription("Palea", "Ana", "palea@ana.fr");
-        Spectateur Jean = spectateurService.inscription("Guiraud", "Jean", "guiraud@@jean.fr");
+        Spectateur Jean = spectateurService.inscription("Guiraud", "Jean", "guiraud@jean.fr");
         Spectateur Touria = spectateurService.inscription("Sayagh", "Touria", "sayagh@touria.fr");
 
         // Use case: Consulter le programme des épreuves
