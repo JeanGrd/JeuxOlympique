@@ -43,7 +43,7 @@ public class OrganisateurService {
         return epreuveRepository.save(epreuve);
     }
 
-    public Epreuve modifierpreuve(long epreuveId, String nom, LocalDate date, int nbDelegations, int nbBillets, float prix, String infrastructureSportive) {
+    public Epreuve modifierEpreuve(long epreuveId, String nom, LocalDate date, int nbDelegations, int nbBillets, float prix, String infrastructureSportive) {
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
         epreuve.setNom(nom);
         epreuve.setDate(date);
