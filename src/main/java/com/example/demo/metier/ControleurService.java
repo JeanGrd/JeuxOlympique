@@ -23,6 +23,6 @@ public class ControleurService {
 
     public boolean verifierBillet(long billetId) {
         Optional<Billet> billet = billetRepository.findById(billetId);
-        return billet.map(b -> "Réservé".equals(b.getEtat())).orElse(false);
+        return billet.map(b -> "Payé".equals(b.getEtat())).orElse(false);
     }
 }

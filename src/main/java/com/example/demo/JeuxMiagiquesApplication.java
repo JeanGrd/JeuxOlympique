@@ -128,7 +128,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         //organisateurService.supprimerEpreuve("100m sprint");
         //organisateurService.supprimerDelegation("USA");
 
-        //organisateurService.setResultat(12, 1, e.getEpreuveId(), Roger.getEmail());
+        organisateurService.setResultat(12, 1, e.getEpreuveId(), Roger.getEmail());
 
         System.out.println(organisateurService.getTotalVentes());
         System.out.println(organisateurService.getTotalPlacesDisponibles());

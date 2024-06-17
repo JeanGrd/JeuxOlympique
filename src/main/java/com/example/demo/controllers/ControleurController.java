@@ -18,7 +18,7 @@ public class ControleurController {
     public ResponseEntity<String> connecterControleur(@RequestParam String email, HttpSession session) {
         boolean existe = controleurService.verifierEmailExist(email);
         if (existe) {
-            session.setAttribute("controleurEmail", email);
+            session.setAttribute("email", email);
             return ResponseEntity.ok("Connexion réussie.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email non trouvé.");
@@ -27,18 +27,18 @@ public class ControleurController {
 
     @PostMapping("/deconnexion")
     public ResponseEntity<String> deconnecterControleur(HttpSession session) {
-        session.removeAttribute("controleurEmail");
+        session.removeAttribute("email");
         return ResponseEntity.ok("Déconnexion réussie.");
     }
 
     @PostMapping("/verifier-billet")
-    public ResponseEntity<String> verifierBillet(@RequestParam long billetId, HttpSession session) {
-        if (session.getAttribute("controleurEmail") != null) {
-            boolean valide = controleurService.verifierBillet(billetId);
+    public ResponseEntity<String> verifierBillet(@RequestParam long id, HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            boolean valide = controleurService.verifierBillet(id);
             if (valide) {
                 return ResponseEntity.ok("Billet valide.");
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Billet invalide ou déjà utilisé.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Billet invalide.");
             }
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");

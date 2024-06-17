@@ -30,14 +30,14 @@ public class ParticipantService {
         return participantRepository.findByEmail(email).isPresent();
     }
 
-    public void inscrireEpreuve(String email, long epreuveId) {
+    public String inscrireEpreuve(String email, long epreuveId) {
         Participant participant = participantRepository.findByEmail(email).orElseThrow();
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
 
         Delegation delegation = participant.getDelegation();
 
         if (delegation == null) {
-            throw new IllegalStateException("Le participant n'est associé à aucune délégation.");
+            return ("Le participant n'est associé à aucune délégation.");
         }
 
         boolean alreadyExists = participeRepository.findByDelegation_DelegationIdAndEpreuve_EpreuveId(delegation.getDelegationId(), epreuveId).isPresent();
@@ -58,12 +58,13 @@ public class ParticipantService {
                     participeRepository.save(participes);
 
                 } else {
-                    throw new IllegalArgumentException("La délégation est déjà inscrite à cette épreuve.");
+                    return "La délégation est déjà inscrite à cette épreuve.";
                 }
             }
         } else {
-            throw new IllegalArgumentException("L'inscription est fermée 10 jours avant la date de l'épreuve.");
+            return "inscription est fermée 10 jours avant la date de l'épreuve.";
         }
+        return "La délégation est bien inscrite";
     }
 
     public String desengagerEpreuve(String email, long epreuveId) {
@@ -97,12 +98,6 @@ public class ParticipantService {
             participeRepository.delete(participation);
             return "Participant désengagé avec succès";
         }
-    }
-
-    public List<Epreuve> listerEpreuvesDisponibles() {
-        // Utilisation de Java Streams pour convertir Iterable en List
-        return StreamSupport.stream(epreuveRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
     }
 
     // Méthode pour consulter les résultats d'un participant spécifique

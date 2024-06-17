@@ -22,7 +22,7 @@ public class ParticipantController {
     public ResponseEntity<String> connecterParticipant(@RequestParam String email, HttpSession session) {
         boolean existe = participantService.verifierEmailExist(email);
         if (existe) {
-            session.setAttribute("participantEmail", email);
+            session.setAttribute("email", email);
             return ResponseEntity.ok("Connexion réussie.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email non trouvé.");
@@ -31,44 +31,34 @@ public class ParticipantController {
 
     @PostMapping("/deconnexion")
     public ResponseEntity<String> deconnecterParticipant(HttpSession session) {
-        session.removeAttribute("participantEmail");
+        session.removeAttribute("email");
         return ResponseEntity.ok("Déconnexion réussie.");
     }
 
-    @GetMapping("/epreuves")
-    public ResponseEntity<List<Epreuve>> listerEpreuves(HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
-            List<Epreuve> epreuves = participantService.listerEpreuvesDisponibles();
-            return ResponseEntity.ok(epreuves);
+    @PostMapping("/inscrire")
+    public ResponseEntity<String> inscriptionEpreuve(@RequestParam long id, HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            String response = participantService.inscrireEpreuve(session.getAttribute("email").toString(), id);
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Une erreur est survenue");
         }
     }
 
    @PostMapping("/desengager")
     public ResponseEntity<String> desengagerEpreuve(@RequestParam long id, HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
-            participantService.desengagerEpreuve(session.getAttribute("participantEmail").toString(), id);
-            return ResponseEntity.ok("OK");
+        if (session.getAttribute("email") != null) {
+            String response = participantService.desengagerEpreuve(session.getAttribute("email").toString(), id);
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOK");
-        }
-    }
-
-    @PostMapping("/inscrire")
-    public ResponseEntity<String> inscriptionEpreuve(@RequestParam long id, HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
-            participantService.inscrireEpreuve(session.getAttribute("participantEmail").toString(), id);
-            return ResponseEntity.ok("OK");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOK");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Une erreur est survenue");
         }
     }
 
     @GetMapping("/resultats")
     public ResponseEntity<List<Resultat>> consulterResultatsParticipant(HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
-            List<Resultat> resultats = participantService.consulterResultatsParticipant(session.getAttribute("participantEmail").toString());
+        if (session.getAttribute("email") != null) {
+            List<Resultat> resultats = participantService.consulterResultatsParticipant(session.getAttribute("email").toString());
             return ResponseEntity.ok(resultats);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -77,8 +67,8 @@ public class ParticipantController {
 
     @GetMapping("/resultats/delegation")
     public ResponseEntity<List<Resultat>> consulterResultatsDelegation(HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
-            List<Resultat> resultats = participantService.consulterResultatsParDelegation(session.getAttribute("participantEmail").toString());
+        if (session.getAttribute("email") != null) {
+            List<Resultat> resultats = participantService.consulterResultatsParDelegation(session.getAttribute("email").toString());
             return ResponseEntity.ok(resultats);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
