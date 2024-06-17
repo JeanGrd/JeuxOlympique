@@ -107,16 +107,16 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         System.out.println(participantService.consulterProgramme());
 
         // Use case: S'inscrire à des épreuves au nom de sa délégation
-        participantService.inscrireEpreuve(Roger.getParticipantId(), e.getEpreuveId());
-        participantService.inscrireEpreuve(Christina.getParticipantId(), e.getEpreuveId());
+        participantService.inscrireEpreuve(Roger.getEmail(), e.getEpreuveId());
+        participantService.inscrireEpreuve(Christina.getEmail(), e.getEpreuveId());
 
-        participantService.desengagerEpreuve(Roger.getParticipantId(), e.getEpreuveId());
+        participantService.desengagerEpreuve(Roger.getEmail(), e.getEpreuveId());
 
         // Use case: consulter ses résultats
-        System.out.println(participantService.consulterResultatsParticipant(Roger.getParticipantId()));
+        System.out.println(participantService.consulterResultatsParticipant(Roger.getEmail()));
 
         // Use case: classement de sa délégation
-        System.out.println(participantService.consulterResultatsParDelegation(Roger.getParticipantId()));
+        System.out.println(participantService.consulterResultatsParDelegation(Roger.getEmail()));
 
         /*
          *
@@ -128,7 +128,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         //organisateurService.supprimerEpreuve("100m sprint");
         //organisateurService.supprimerDelegation("USA");
 
-        organisateurService.setResultat(12, 1, e.getEpreuveId(), Roger.getParticipantId());
+        //organisateurService.setResultat(12, 1, e.getEpreuveId(), Roger.getEmail());
 
         System.out.println(organisateurService.getTotalVentes());
         System.out.println(organisateurService.getTotalPlacesDisponibles());

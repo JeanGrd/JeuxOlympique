@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import com.example.demo.entities.Epreuve;
-import com.example.demo.entities.Participant;
 import com.example.demo.entities.Resultat;
 import com.example.demo.metier.ParticipantService;
 import jakarta.servlet.http.HttpSession;
@@ -46,10 +45,20 @@ public class ParticipantController {
         }
     }
 
-   @PostMapping("/desengager/{epreuveId}")
-    public ResponseEntity<String> desengagerEpreuve(@RequestParam long participantId, @RequestParam long epreuveId, HttpSession session) {
+   @PostMapping("/desengager")
+    public ResponseEntity<String> desengagerEpreuve(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("participantEmail") != null) {
-            participantService.desengagerEpreuve(participantId, epreuveId);
+            participantService.desengagerEpreuve(session.getAttribute("participantEmail").toString(), id);
+            return ResponseEntity.ok("OK");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOK");
+        }
+    }
+
+    @PostMapping("/inscrire")
+    public ResponseEntity<String> inscriptionEpreuve(@RequestParam long id, HttpSession session) {
+        if (session.getAttribute("participantEmail") != null) {
+            participantService.inscrireEpreuve(session.getAttribute("participantEmail").toString(), id);
             return ResponseEntity.ok("OK");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOK");
@@ -57,9 +66,9 @@ public class ParticipantController {
     }
 
     @GetMapping("/resultats")
-    public ResponseEntity<List<Resultat>> consulterResultatsParticipant(@RequestParam long participantId, HttpSession session) {
+    public ResponseEntity<List<Resultat>> consulterResultatsParticipant(HttpSession session) {
         if (session.getAttribute("participantEmail") != null) {
-            List<Resultat> resultats = participantService.consulterResultatsParticipant(participantId);
+            List<Resultat> resultats = participantService.consulterResultatsParticipant(session.getAttribute("participantEmail").toString());
             return ResponseEntity.ok(resultats);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -67,9 +76,9 @@ public class ParticipantController {
     }
 
     @GetMapping("/resultats/delegation")
-    public ResponseEntity<List<Resultat>> consulterResultatsDelegation(@RequestParam long participantId, HttpSession session) {
+    public ResponseEntity<List<Resultat>> consulterResultatsDelegation(HttpSession session) {
         if (session.getAttribute("participantEmail") != null) {
-            List<Resultat> resultats = participantService.consulterResultatsParDelegation(participantId);
+            List<Resultat> resultats = participantService.consulterResultatsParDelegation(session.getAttribute("participantEmail").toString());
             return ResponseEntity.ok(resultats);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);

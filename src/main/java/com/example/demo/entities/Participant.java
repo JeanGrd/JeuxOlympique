@@ -11,11 +11,9 @@ import lombok.Setter;
 public class Participant {
 
     @Id
-    @GeneratedValue
-    private long participantId;
+    private String email;
     private String nom;
     private String prenom;
-    private String email;
     @ManyToOne
     @JoinColumn(name = "delegationId")
     private Delegation delegation;

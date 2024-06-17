@@ -3,7 +3,6 @@ package com.example.demo.metier;
 import com.example.demo.dao.*;
 import com.example.demo.entities.*;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +30,8 @@ public class ParticipantService {
         return participantRepository.findByEmail(email).isPresent();
     }
 
-    public void inscrireEpreuve(long participantId, long epreuveId) {
-        Participant participant = participantRepository.findById(participantId).orElseThrow();
+    public void inscrireEpreuve(String email, long epreuveId) {
+        Participant participant = participantRepository.findByEmail(email).orElseThrow();
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
 
         Delegation delegation = participant.getDelegation();
@@ -67,11 +66,11 @@ public class ParticipantService {
         }
     }
 
-    public String desengagerEpreuve(long participantId, long epreuveId) {
+    public String desengagerEpreuve(String email, long epreuveId) {
         // Récupérer l'épreuve
         Epreuve epreuve = epreuveRepository.findById(epreuveId)
                 .orElseThrow(() -> new EntityNotFoundException("Epreuve not found"));
-        Participant participant = participantRepository.findById(participantId)
+        Participant participant = participantRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Participant not found"));
         Delegation delegation = delegationRepository.findById(participant.getDelegation().getDelegationId())
                 .orElseThrow(() -> new EntityNotFoundException("Epreuve not found"));
@@ -107,14 +106,14 @@ public class ParticipantService {
     }
 
     // Méthode pour consulter les résultats d'un participant spécifique
-    public List<Resultat> consulterResultatsParticipant(long participantId) {
-        Participant participant = participantRepository.findById(participantId).orElseThrow();
+    public List<Resultat> consulterResultatsParticipant(String email) {
+        Participant participant = participantRepository.findByEmail(email).orElseThrow();
         return resultatRepository.findByParticipant(participant);
     }
 
     // Méthode pour consulter les résultats de la délégation d'un participant
-    public List<Resultat> consulterResultatsParDelegation(long participantId) {
-        Participant participant = participantRepository.findById(participantId).orElseThrow();
+    public List<Resultat> consulterResultatsParDelegation(String email) {
+        Participant participant = participantRepository.findByEmail(email).orElseThrow();
         long delegationId = participant.getDelegation().getDelegationId();
         Delegation delegation = delegationRepository.findById(delegationId).orElseThrow();
         return resultatRepository.findByParticipant_Delegation(delegation);

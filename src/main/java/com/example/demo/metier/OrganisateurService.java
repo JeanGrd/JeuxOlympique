@@ -80,7 +80,7 @@ public class OrganisateurService {
 
         List<Participant> participants = participantRepository.findByDelegation(delegation);
         for (Participant participant : participants) {
-            participant.setDelegation(null); // Ou bien participantRepository.delete(participant); si vous voulez les supprimer
+            participant.setDelegation(null);
             participantRepository.save(participant);
         }
         delegationRepository.delete(delegation);
@@ -176,12 +176,12 @@ public class OrganisateurService {
         participantRepository.save(participant);
     }
 
-    public String setResultat(double point, int position, long epreuveId, long participantId) {
+    public String setResultat(double point, int position, long epreuveId, String email) {
         Resultat resultat = new Resultat();
         Epreuve epreuve = epreuveRepository.findById(epreuveId)
                 .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveId));
-        Participant participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'id : " + participantId));
+        Participant participant = participantRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'email : " + email));
 
         resultat.setPoint(point);
         resultat.setPosition(position);

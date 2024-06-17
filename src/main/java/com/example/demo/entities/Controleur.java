@@ -12,9 +12,8 @@ import lombok.Setter;
 @Entity
 public class Controleur {
     @Id
-    @GeneratedValue
-    private long controleurId;
+    private String email;
     private String nom;
     private String prenom;
-    private String email;
+
 }
