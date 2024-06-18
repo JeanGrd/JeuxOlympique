@@ -16,7 +16,6 @@ public class Epreuve {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long epreuveId;
-
     private String nom;
     private LocalDate date;
     private int nb_delegations;

@@ -100,7 +100,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         // Mettre en place le nombre de billets
         organisateurService.setNbBillets(e.getEpreuveId(), 30);
 
-        organisateurService.setNbParticipant(e.getEpreuveId(), 450);
+        organisateurService.setNbParticipants(e.getEpreuveId(), 450);
 
         // Création d'un contrôleur
         Controleur c = new Controleur();
