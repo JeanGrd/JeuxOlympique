@@ -28,21 +28,6 @@ public class OrganisateurService {
     @Autowired
     private ResultatRepository resultatRepository;
 
-    public Epreuve creerEpreuve(String nom, LocalDate date, int nbDelegations, int nbBillets, float prix, String infrastructureSportive) {
-        Epreuve epreuve = new Epreuve();
-        epreuve.setNom(nom);
-        epreuve.setDate(date);
-        epreuve.setNb_billets(nbBillets);
-        epreuve.setNb_delegations(nbDelegations);
-        epreuve.setPrix(prix);
-
-        InfrastructureSportive infra = infrastructureSportiveRepository.findByNom(infrastructureSportive)
-                .orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec le nom : " + infrastructureSportive));
-
-        epreuve.setInfrastructureSportive(infra);
-        return epreuveRepository.save(epreuve);
-    }
-
     public Epreuve modifierEpreuve(long epreuveId, String nom, LocalDate date, int nbDelegations, int nbBillets, float prix, String infrastructureSportive) {
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
         epreuve.setNom(nom);
@@ -64,19 +49,14 @@ public class OrganisateurService {
         return organisateurRepository.findByEmail(email).isPresent();
     }
 
-    public Delegation creerDelegation(String nom) {
-        Delegation delegation = new Delegation();
-        delegation.setNom(nom);
-        delegation.setNb_medaille_bronze(0);
-        delegation.setNb_medaille_argent(0);
-        delegation.setNb_medaille_or(0);
+    public Delegation creerDelegation(Delegation delegation) {
         return delegationRepository.save(delegation);
     }
 
     @Transactional
-    public void supprimerDelegation(String delegationNom) {
-        Delegation delegation = delegationRepository.findByNom(delegationNom)
-                .orElseThrow(() -> new RuntimeException("Délégation non trouvée avec le nom : " + delegationNom));
+    public void supprimerDelegation(long id) {
+        Delegation delegation = delegationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Délégation non trouvée avec l'id' : " + id));
 
         List<Participant> participants = participantRepository.findByDelegation(delegation);
         for (Participant participant : participants) {
@@ -86,49 +66,48 @@ public class OrganisateurService {
         delegationRepository.delete(delegation);
     }
 
+    public Epreuve creerEpreuve(Epreuve epreuve, long idInfrastructure) {
+
+        InfrastructureSportive infra = infrastructureSportiveRepository.findById(idInfrastructure)
+                .orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec l'id : " + idInfrastructure));
+
+        epreuve.setInfrastructureSportive(infra);
+        return epreuveRepository.save(epreuve);
+    }
 
     @Transactional
-    public void supprimerEpreuve(String epreuveNom) {
-        Epreuve epreuve = epreuveRepository.findByNom(epreuveNom)
-                .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec le nom : " + epreuveNom));
+    public void supprimerEpreuve(long id) {
+        Epreuve epreuve = epreuveRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + id));
 
         epreuveRepository.delete(epreuve);
     }
 
-
-    public Participant creerParticipant(String nom, String prenom, String email) {
-        Participant participant = new Participant();
-        participant.setNom(nom);
-        participant.setPrenom(prenom);
-        participant.setEmail(email);
+    public Participant creerParticipant(Participant participant) {
         return participantRepository.save(participant);
     }
 
-    public Controleur creerControleur(String nom, String prenom, String email) {
-        Controleur controleur = new Controleur();
-        controleur.setNom(nom);
-        controleur.setPrenom(prenom);
-        controleur.setEmail(email);
-        return controleurRepository.save(controleur);
-    }
-
-    public String supprimerParticipant(String email) {
-        Participant participant = participantRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("participant non trouvée avec email : " + email));
+    public String supprimerParticipant(long id) {
+        Participant participant = participantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("participant non trouvée avec id : " + id));
         participantRepository.delete(participant);
         return "Ok";
     }
 
+    public Controleur creerControleur(Controleur controleur) {
+        return controleurRepository.save(controleur);
+    }
 
-    public String supprimerControleur(String email) {
-        Controleur controleur = controleurRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("controleur non trouvée avec email : " + email));
+    public String supprimerControleur(long id) {
+        Controleur controleur = controleurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("controleur non trouvée avec id : " + id));
         controleurRepository.delete(controleur);
         return "Ok";
     }
 
 
-    public Epreuve setDate(Epreuve epreuve, LocalDate date) {
+    public Epreuve setDate(LocalDate date, long idEpreuve) {
+        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow();
         epreuve.setDate(date);
         return epreuve;
     }
@@ -167,34 +146,30 @@ public class OrganisateurService {
         return epreuveRepository.getTotalVentes();
     }
 
-    public void setDelegation(String participantEmail, String delegationNom) {
-        Participant participant = participantRepository.findByEmail(participantEmail)
-                .orElseThrow(() -> new RuntimeException("Participant non trouvée avec le nom : " + participantEmail));
-        Delegation delegation = delegationRepository.findByNom(delegationNom)
-                .orElseThrow(() -> new RuntimeException("Délégation non trouvée avec le nom : " + delegationNom));
+    public void setDelegation(String emailParticipant, long idDelegation) {
+        Participant participant = participantRepository.findByEmail(emailParticipant)
+                .orElseThrow(() -> new RuntimeException("Participant non trouvée avec le nom : " + emailParticipant));
+        Delegation delegation = delegationRepository.findById(idDelegation)
+                .orElseThrow(() -> new RuntimeException("Délégation non trouvée avec l'id : " + idDelegation));
         participant.setDelegation(delegation);
         participantRepository.save(participant);
     }
 
-    public String setResultat(double point, int position, long epreuveId, String email) {
-        Resultat resultat = new Resultat();
+    public String setResultat(Resultat resultat, long epreuveId, String emailParticipant) {
         Epreuve epreuve = epreuveRepository.findById(epreuveId)
                 .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveId));
-        Participant participant = participantRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'email : " + email));
-
-        resultat.setPoint(point);
-        resultat.setPosition(position);
+        Participant participant = participantRepository.findByEmail(emailParticipant)
+                .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'email : " + emailParticipant));
         resultat.setEpreuve(epreuve);
         resultat.setParticipant(participant);
 
         resultatRepository.save(resultat);
 
-        if (position >= 0 && position <= 2) {
+        if (resultat.getPosition() >= 0 && resultat.getPosition() <= 2) {
             Delegation delegation = resultat.getParticipant().getDelegation();
-            if (position == 0) {
+            if (resultat.getPosition() == 0) {
                 delegation.setNb_medaille_or(delegation.getNb_medaille_or() + 1);
-            } else if (position == 1) {
+            } else if (resultat.getPosition() == 1) {
                 delegation.setNb_medaille_argent(delegation.getNb_medaille_argent() + 1);
             } else {
                 delegation.setNb_medaille_bronze(delegation.getNb_medaille_bronze() + 1);

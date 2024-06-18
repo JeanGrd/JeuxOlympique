@@ -48,19 +48,51 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          */
 
         // Création d'une épreuve
-        Epreuve e = organisateurService.creerEpreuve("100m sprint", LocalDate.of(2025, 12, 2), 500, 300,115.5F, "Stade Olympique");
-        organisateurService.creerEpreuve("test", LocalDate.of(2025, 12, 2), 1500, 300, 75, "Stade Toulousain");
-        Participant Lans = organisateurService.creerParticipant("Robert", "Lans", "robert@lans.fr");
-        Participant Roger = organisateurService.creerParticipant("Dons", "Roger", "dons@roger.fr");
-        Participant Christina = organisateurService.creerParticipant("Garcia", "Christina", "garcia@christina.fr");
+        Epreuve e1 = new Epreuve();
+        e1.setNom("100m sprint");
+        e1.setPrix(115.5F);
+        e1.setNb_billets(1000);
+        e1.setDate(LocalDate.of(2025, 12, 2));
+        e1.setNb_delegations(10);
+
+        Epreuve e2 = new Epreuve();
+        e2.setNom("300m sprint");
+        e2.setPrix(135.5F);
+        e2.setNb_billets(1500);
+        e2.setDate(LocalDate.of(2025, 10, 2));
+        e2.setNb_delegations(15);
+
+        Epreuve e = organisateurService.creerEpreuve(e1, 1);
+        organisateurService.creerEpreuve(e2, 2);
+
+        Participant Lans = new Participant();
+        Lans.setPrenom("Lans");
+        Lans.setNom("Robert");
+        Lans.setEmail("robert@lans.fr");
+        Participant Roger = new Participant();
+        Lans.setPrenom("Roger");
+        Lans.setNom("Dons");
+        Lans.setEmail("dons@roger.fr");
+        Participant Christina = new Participant();
+        Lans.setPrenom("Christina");
+        Lans.setNom("Garcia");
+        Lans.setEmail("garcia@christina.fr");
+
+        organisateurService.creerParticipant(Lans);
+        organisateurService.creerParticipant(Roger);
+        organisateurService.creerParticipant(Christina);
+
+        Delegation france = new Delegation();
+        france.setNom("France");
+        Delegation usa = new Delegation();
+        usa.setNom("USA");
 
         // Création d'un participant
-        organisateurService.creerDelegation("France");
-        organisateurService.creerDelegation("USA");
-
-        organisateurService.setDelegation("dons@roger.fr", "USA");
-        organisateurService.setDelegation("garcia@christina.fr", "France");
-        organisateurService.setDelegation("robert@lans.fr", "USA");
+        organisateurService.creerDelegation(france);
+        organisateurService.creerDelegation(usa);
+        organisateurService.setDelegation("dons@roger.fr", 1);
+        organisateurService.setDelegation("garcia@christina.fr", 2);
+        organisateurService.setDelegation("robert@lans.fr", 1);
 
         // Mettre en place le nombre de billets
         organisateurService.setNbBillets(e.getEpreuveId(), 30);
@@ -68,7 +100,10 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         organisateurService.setNbParticipant(e.getEpreuveId(), 450);
 
         // Création d'un contrôleur
-        organisateurService.creerControleur("Brown", "Charlie", "charlie.brown@example.com");
+        Controleur c = new Controleur();
+        c.setPrenom("Brown");
+        c.setNom("Charlie");
+        c.setEmail("charlie.brown@example.com");
 
         /*
          *
@@ -128,7 +163,10 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         //organisateurService.supprimerEpreuve("100m sprint");
         //organisateurService.supprimerDelegation("USA");
 
-        organisateurService.setResultat(12, 1, e.getEpreuveId(), Roger.getEmail());
+        Resultat resultat = new Resultat();
+        resultat.setPosition(1);
+        resultat.setPoint(12);
+        organisateurService.setResultat(resultat, e.getEpreuveId(), Roger.getEmail());
 
         System.out.println(organisateurService.getTotalVentes());
         System.out.println(organisateurService.getTotalPlacesDisponibles());

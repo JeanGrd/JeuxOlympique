@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.entities.Delegation;
-import com.example.demo.entities.Epreuve;
+import com.example.demo.entities.*;
 import com.example.demo.metier.OrganisateurService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +35,19 @@ public class OrganisateurController {
     }
 
     @PostMapping("/delegation")
-    public ResponseEntity<Delegation> creerDelegation(@RequestBody String nom, HttpSession session) {
+    public ResponseEntity<Delegation> creerDelegation(@RequestBody Delegation delegation, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            Delegation created = organisateurService.creerDelegation(nom);
+            Delegation created = organisateurService.creerDelegation(delegation);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 
-    @DeleteMapping("/delegation/{nom}")
-    public ResponseEntity<String> supprimerDelegation(@PathVariable String nom, HttpSession session) {
+    @DeleteMapping("/delegation")
+    public ResponseEntity<String> supprimerDelegation(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            organisateurService.supprimerDelegation(nom);
+            organisateurService.supprimerDelegation(id);
             return ResponseEntity.ok("Délégation supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
@@ -56,42 +55,109 @@ public class OrganisateurController {
     }
 
     @PostMapping("/epreuve")
-    public ResponseEntity<Epreuve> creerEpreuve(@RequestParam String nom, @RequestParam LocalDate date,
-                                                @RequestParam int nbPlaces, @RequestParam int nbBillets,
-                                                @RequestParam float prix,
-                                                @RequestParam String infrastructure, HttpSession session) {
+    public ResponseEntity<Epreuve> creerEpreuve(@RequestBody Epreuve epreuve, long idInfrastructure, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            Epreuve created = organisateurService.creerEpreuve(nom, date, nbPlaces, nbBillets, prix,  infrastructure);
+            Epreuve created = organisateurService.creerEpreuve(epreuve, idInfrastructure);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 
-    @DeleteMapping("/epreuve/{nom}")
-    public ResponseEntity<String> supprimerEpreuve(@PathVariable String nom, HttpSession session) {
+    @DeleteMapping("/epreuve")
+    public ResponseEntity<String> supprimerEpreuve(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            organisateurService.supprimerEpreuve(nom);
+            organisateurService.supprimerEpreuve(id);
             return ResponseEntity.ok("Épreuve supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
-    @DeleteMapping("/participant/{email}")
-    public ResponseEntity<String> supprimerParticipant(@PathVariable String email, HttpSession session) {
+    @PostMapping("/participant")
+    public ResponseEntity<Participant> creerParticipant(@RequestBody Participant participant, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            organisateurService.supprimerParticipant(email);
+            Participant created = organisateurService.creerParticipant(participant);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
+    @DeleteMapping("/participant")
+    public ResponseEntity<String> supprimerParticipant(@RequestParam long id, HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.supprimerParticipant(id);
             return ResponseEntity.ok("Épreuve supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
-    @DeleteMapping("/controleur/{email}")
-    public ResponseEntity<String> supprimerControleur(@PathVariable String email, HttpSession session) {
+    @PostMapping("/controleur")
+    public ResponseEntity<Controleur> creerControleur(@RequestBody Controleur controleur, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            organisateurService.supprimerControleur(email);
+            Controleur created = organisateurService.creerControleur(controleur);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
+    @DeleteMapping("/controleur")
+    public ResponseEntity<String> supprimerControleur(@RequestParam long id, HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.supprimerControleur(id);
+            return ResponseEntity.ok("Épreuve supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @PostMapping("/epreuve/date")
+    public ResponseEntity<String> setDate(@RequestBody LocalDate Date, long idEpreuve, HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.setDate(Date, idEpreuve);
+            return ResponseEntity.ok("Épreuve supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @PostMapping("/epreuve/nbParticipant")
+    public ResponseEntity<String> setNbParticipant(@RequestParam long idEpreuve, int nbParticipant, HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.setNbParticipant(idEpreuve, nbParticipant);
+            return ResponseEntity.ok("Épreuve supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @PostMapping("/epreuve/nbBillet")
+    public ResponseEntity<String> setNbBillets(@RequestParam long idEpreuve, int nbBillets, HttpSession session) throws Exception {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.setNbBillets(idEpreuve, nbBillets);
+            return ResponseEntity.ok("Épreuve supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @PostMapping("/epreuve/delegation")
+    public ResponseEntity<String> setDelegation(@RequestParam String emailParticipant, long idDelegation, HttpSession session) throws Exception {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.setDelegation(emailParticipant, idDelegation);
+            return ResponseEntity.ok("Épreuve supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    @PostMapping("/epreuve/resultat")
+    public ResponseEntity<String> setDelegation(@RequestBody Resultat resultat, long idEpreuve, String emailParticipant, HttpSession session) throws Exception {
+        if (session.getAttribute("organisateurEmail") != null) {
+            organisateurService.setResultat(resultat, idEpreuve, emailParticipant);
             return ResponseEntity.ok("Épreuve supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
