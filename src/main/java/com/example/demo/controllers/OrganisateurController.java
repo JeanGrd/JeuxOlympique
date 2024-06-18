@@ -55,8 +55,9 @@ public class OrganisateurController {
     }
 
     @PostMapping("/epreuve")
-    public ResponseEntity<Epreuve> creerEpreuve(@RequestBody Epreuve epreuve, long idInfrastructure, HttpSession session) {
+    public ResponseEntity<Epreuve> creerEpreuve(@RequestBody Epreuve epreuve, @RequestParam Long idInfrastructure, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
+            epreuve.setDate(LocalDate.of(2025, 10, 2));
             Epreuve created = organisateurService.creerEpreuve(epreuve, idInfrastructure);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } else {
@@ -105,92 +106,92 @@ public class OrganisateurController {
     }
 
     @DeleteMapping("/controleur")
-    public ResponseEntity<String> supprimerControleur(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<String> supprimerControleur(@RequestParam String email, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            organisateurService.supprimerControleur(id);
-            return ResponseEntity.ok("Épreuve supprimée.");
+            organisateurService.supprimerControleur(email);
+            return ResponseEntity.ok("Controleur supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
     @PostMapping("/epreuve/date")
-    public ResponseEntity<String> setDate(@RequestBody LocalDate Date, long idEpreuve, HttpSession session) {
+    public ResponseEntity<String> setDate(@RequestParam LocalDate date, @RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
-            organisateurService.setDate(Date, idEpreuve);
-            return ResponseEntity.ok("Épreuve supprimée.");
+            organisateurService.setDate(date, idEpreuve);
+            return ResponseEntity.ok("Date mise à jour");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
     @PostMapping("/epreuve/nbParticipant")
-    public ResponseEntity<String> setNbParticipant(@RequestParam long idEpreuve, int nbParticipant, HttpSession session) {
+    public ResponseEntity<String> setNbParticipant(@RequestParam long idEpreuve, @RequestParam int nbParticipant, HttpSession session) {
         if (session.getAttribute("organisateurEmail") != null) {
             organisateurService.setNbParticipant(idEpreuve, nbParticipant);
-            return ResponseEntity.ok("Épreuve supprimée.");
+            return ResponseEntity.ok("Nombrer de participant mis à jour");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
     @PostMapping("/epreuve/nbBillet")
-    public ResponseEntity<String> setNbBillets(@RequestParam long idEpreuve, int nbBillets, HttpSession session) throws Exception {
+    public ResponseEntity<String> setNbBillets(@RequestParam long idEpreuve, @RequestParam int nbBillets, HttpSession session) throws Exception {
         if (session.getAttribute("organisateurEmail") != null) {
             organisateurService.setNbBillets(idEpreuve, nbBillets);
-            return ResponseEntity.ok("Épreuve supprimée.");
+            return ResponseEntity.ok("Nombre de billets mis à jour");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
-    @PostMapping("/epreuve/delegation")
-    public ResponseEntity<String> setDelegation(@RequestParam String emailParticipant, long idDelegation, HttpSession session) throws Exception {
+    @PostMapping("/participant/delegation")
+    public ResponseEntity<String> setDelegation(@RequestParam String emailParticipant, @RequestParam long idDelegation, HttpSession session) throws Exception {
         if (session.getAttribute("organisateurEmail") != null) {
             organisateurService.setDelegation(emailParticipant, idDelegation);
-            return ResponseEntity.ok("Épreuve supprimée.");
+            return ResponseEntity.ok("Delegation appliquée");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
     @PostMapping("/epreuve/resultat")
-    public ResponseEntity<String> setDelegation(@RequestBody Resultat resultat, long idEpreuve, String emailParticipant, HttpSession session) throws Exception {
+    public ResponseEntity<String> setResultat(@RequestBody Resultat resultat, @RequestParam long idEpreuve, @RequestParam String emailParticipant, HttpSession session) throws Exception {
         if (session.getAttribute("organisateurEmail") != null) {
             organisateurService.setResultat(resultat, idEpreuve, emailParticipant);
-            return ResponseEntity.ok("Épreuve supprimée.");
+            return ResponseEntity.ok("Résultat mis à jour");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
     @GetMapping("/places-disponibles")
-    public ResponseEntity<Integer> getTotalPlacesDisponibles(HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
+    public ResponseEntity<String> getTotalPlacesDisponibles(HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
             int placesDisponibles = organisateurService.getTotalPlacesDisponibles();
-            return ResponseEntity.ok(placesDisponibles);
+            return ResponseEntity.ok("Places disponible : " + placesDisponibles);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
     @GetMapping("/chiffre-affaires")
-    public ResponseEntity<Double> getChiffreAffaires(HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
+    public ResponseEntity<String> getChiffreAffaires(HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
             double chiffreAffaires = organisateurService.getChiffreAffaires();
-            return ResponseEntity.ok(chiffreAffaires);
+            return ResponseEntity.ok("Chiffre d'affaires : " + chiffreAffaires);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 
     @GetMapping("/total-ventes")
-    public ResponseEntity<Double> getTotalVentes(HttpSession session) {
-        if (session.getAttribute("participantEmail") != null) {
-            double chiffreAffaires = organisateurService.getTotalVentes();
-            return ResponseEntity.ok(chiffreAffaires);
+    public ResponseEntity<String> getTotalVentes(HttpSession session) {
+        if (session.getAttribute("organisateurEmail") != null) {
+            int totalVentes= organisateurService.getTotalVentes();
+            return ResponseEntity.ok("Total des ventes : " + totalVentes);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
 }

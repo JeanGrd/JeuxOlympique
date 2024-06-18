@@ -98,9 +98,9 @@ public class OrganisateurService {
         return controleurRepository.save(controleur);
     }
 
-    public String supprimerControleur(long id) {
-        Controleur controleur = controleurRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("controleur non trouvée avec id : " + id));
+    public String supprimerControleur(String email) {
+        Controleur controleur = controleurRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("controleur non trouvée avec email : " + email));
         controleurRepository.delete(controleur);
         return "Ok";
     }
@@ -109,6 +109,7 @@ public class OrganisateurService {
     public Epreuve setDate(LocalDate date, long idEpreuve) {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow();
         epreuve.setDate(date);
+        epreuveRepository.save(epreuve);
         return epreuve;
     }
 
@@ -130,6 +131,7 @@ public class OrganisateurService {
         } else {
             epreuve.setNb_billets(nbBillets);
         }
+        epreuveRepository.save(epreuve);
         return epreuve;
     }
 

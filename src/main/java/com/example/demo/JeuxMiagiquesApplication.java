@@ -70,15 +70,16 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         Lans.setNom("Robert");
         Lans.setEmail("robert@lans.fr");
         Participant Roger = new Participant();
-        Lans.setPrenom("Roger");
-        Lans.setNom("Dons");
-        Lans.setEmail("dons@roger.fr");
+        Roger.setPrenom("Roger");
+        Roger.setNom("Dons");
+        Roger.setEmail("dons@roger.fr");
         Participant Christina = new Participant();
-        Lans.setPrenom("Christina");
-        Lans.setNom("Garcia");
-        Lans.setEmail("garcia@christina.fr");
+        Christina.setPrenom("Christina");
+        Christina.setNom("Garcia");
+        Christina.setEmail("garcia@christina.fr");
 
         organisateurService.creerParticipant(Lans);
+        System.out.println("hello");
         organisateurService.creerParticipant(Roger);
         organisateurService.creerParticipant(Christina);
 
@@ -86,6 +87,8 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         france.setNom("France");
         Delegation usa = new Delegation();
         usa.setNom("USA");
+
+        Billet b = new Billet();
 
         // Création d'un participant
         organisateurService.creerDelegation(france);
