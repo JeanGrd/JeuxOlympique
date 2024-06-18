@@ -1,6 +1,5 @@
 package com.example.demo.controllers;
 
-import com.example.demo.entities.Billet;
 import com.example.demo.entities.Spectateur;
 import com.example.demo.metier.SpectateurService;
 import jakarta.servlet.http.HttpSession;

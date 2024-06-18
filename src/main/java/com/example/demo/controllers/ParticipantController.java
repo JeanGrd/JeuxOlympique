@@ -1,6 +1,5 @@
 package com.example.demo.controllers;
 
-import com.example.demo.entities.Epreuve;
 import com.example.demo.entities.Resultat;
 import com.example.demo.metier.ParticipantService;
 import jakarta.servlet.http.HttpSession;
@@ -45,7 +44,7 @@ public class ParticipantController {
         }
     }
 
-   @PostMapping("/desengager")
+    @PostMapping("/desengager")
     public ResponseEntity<String> desengagerEpreuve(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("email") != null) {
             String response = participantService.desengagerEpreuve(session.getAttribute("email").toString(), id);

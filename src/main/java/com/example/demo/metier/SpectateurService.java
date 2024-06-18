@@ -1,8 +1,8 @@
 package com.example.demo.metier;
 
 import com.example.demo.dao.BilletRepository;
-import com.example.demo.dao.SpectateurRepository;
 import com.example.demo.dao.EpreuveRepository;
+import com.example.demo.dao.SpectateurRepository;
 import com.example.demo.entities.Billet;
 import com.example.demo.entities.Epreuve;
 import com.example.demo.entities.Spectateur;
@@ -14,21 +14,19 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
 public class SpectateurService {
 
+    private static final int MAX_BILLETS_PAR_EPREUVE = 4;
     @Autowired
     private BilletRepository billetRepository;
     @Autowired
     private SpectateurRepository spectateurRepository;
     @Autowired
     private EpreuveRepository epreuveRepository;
-
-    private static final int MAX_BILLETS_PAR_EPREUVE = 4;
 
     public Spectateur inscription(String nom, String prenom, String email) {
         Spectateur spectateur = new Spectateur();
@@ -106,11 +104,11 @@ public class SpectateurService {
 
     private double calculerRemboursement(long joursAvantEpreuve, double prix) {
         if (joursAvantEpreuve > 7) {
-            return prix; // Remboursement intégral
+            return prix;
         } else if (joursAvantEpreuve >= 3) {
-            return prix * 0.5; // Remboursement de 50%
+            return prix * 0.5;
         } else {
-            return 0; // Aucun remboursement
+            return 0;
         }
     }
 

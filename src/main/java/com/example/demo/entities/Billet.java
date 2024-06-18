@@ -15,9 +15,10 @@ public class Billet {
     private double prix;
     private double remboursement;
 
-    /* 2 états possibles :
+    /* 3 états possibles :
         - Réservé
-        - Validé
+        - Annulé
+        - Payé
     */
     private String etat;
     @ManyToOne
