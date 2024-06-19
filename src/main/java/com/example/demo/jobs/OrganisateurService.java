@@ -1,4 +1,4 @@
-package com.example.demo.metier;
+package com.example.demo.jobs;
 
 import com.example.demo.dao.*;
 import com.example.demo.dto.EpreuveDTO;
@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Service pour gérer les opérations liées aux organisateurs.
+ * Ce service permet de gérer les délégations, les épreuves, les participants, les contrôleurs,
+ * de définir les dates et le nombre de billets/participants pour les épreuves, et de consulter diverses statistiques.
+ */
 @Service
 public class OrganisateurService {
 
@@ -30,15 +35,31 @@ public class OrganisateurService {
     @Autowired
     private ResultatRepository resultatRepository;
 
+    /**
+     * Vérifie si un email existe dans le système.
+     *
+     * @param email l'email à vérifier
+     * @return true si l'email existe, false sinon
+     */
     public boolean verifierEmailExist(String email) {
         return organisateurRepository.findByEmail(email).isPresent();
     }
 
+    /**
+     * Crée une nouvelle délégation.
+     *
+     * @param delegation la délégation à créer
+     */
     @Transactional
     public void creerDelegation(Delegation delegation) {
         delegationRepository.save(delegation);
     }
 
+    /**
+     * Supprime une délégation et dissocie tous les participants liés.
+     *
+     * @param id l'identifiant de la délégation à supprimer
+     */
     @Transactional
     public void supprimerDelegation(long id) {
         Delegation delegation = delegationRepository.findById(id).orElseThrow(()
@@ -52,6 +73,12 @@ public class OrganisateurService {
         delegationRepository.delete(delegation);
     }
 
+    /**
+     * Crée une nouvelle épreuve.
+     *
+     * @param epreuveDTO les informations de l'épreuve à créer
+     * @return l'épreuve créée
+     */
     @Transactional
     public Epreuve creerEpreuve(EpreuveDTO epreuveDTO) {
         Epreuve epreuve = new Epreuve();
@@ -66,6 +93,11 @@ public class OrganisateurService {
         return epreuveRepository.save(epreuve);
     }
 
+    /**
+     * Supprime une épreuve.
+     *
+     * @param id l'identifiant de l'épreuve à supprimer
+     */
     @Transactional
     public void supprimerEpreuve(long id) {
         Epreuve epreuve = epreuveRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + id));
@@ -73,6 +105,11 @@ public class OrganisateurService {
         epreuveRepository.delete(epreuve);
     }
 
+    /**
+     * Modifie les informations d'une épreuve.
+     *
+     * @param epreuveDTO les nouvelles informations de l'épreuve
+     */
     @Transactional
     public void modifierEpreuve(EpreuveDTO epreuveDTO) {
         Epreuve epreuve = epreuveRepository.findById(epreuveDTO.getIdEpreuve())
@@ -103,22 +140,44 @@ public class OrganisateurService {
         epreuveRepository.save(epreuve);
     }
 
+    /**
+     * Crée un nouveau participant.
+     *
+     * @param participant le participant à créer
+     * @return le participant créé
+     */
     @Transactional
     public Participant creerParticipant(Participant participant) {
         return participantRepository.save(participant);
     }
 
+    /**
+     * Supprime un participant.
+     *
+     * @param id l'identifiant du participant à supprimer
+     */
     @Transactional
     public void supprimerParticipant(long id) {
         Participant participant = participantRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'id : " + id));
         participantRepository.delete(participant);
     }
 
+    /**
+     * Crée un nouveau contrôleur.
+     *
+     * @param controleur le contrôleur à créer
+     * @return le contrôleur créé
+     */
     @Transactional
     public Controleur creerControleur(Controleur controleur) {
         return controleurRepository.save(controleur);
     }
 
+    /**
+     * Supprime un contrôleur par son email.
+     *
+     * @param email l'email du contrôleur à supprimer
+     */
     @Transactional
     public void supprimerControleur(String email) {
         Controleur controleur = controleurRepository.findByEmail(email).orElseThrow(()
@@ -126,6 +185,12 @@ public class OrganisateurService {
         controleurRepository.delete(controleur);
     }
 
+    /**
+     * Définit la date d'une épreuve.
+     *
+     * @param date      la nouvelle date de l'épreuve
+     * @param idEpreuve l'identifiant de l'épreuve
+     */
     @Transactional
     public void setDate(LocalDate date, long idEpreuve) {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
@@ -134,6 +199,13 @@ public class OrganisateurService {
         epreuveRepository.save(epreuve);
     }
 
+    /**
+     * Définit le nombre de participants pour une épreuve.
+     *
+     * @param idEpreuve     l'identifiant de l'épreuve
+     * @param nbParticipant le nombre de participants
+     * @return un message de confirmation
+     */
     @Transactional
     public String setNbParticipants(long idEpreuve, int nbParticipant) {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
@@ -147,6 +219,13 @@ public class OrganisateurService {
         return "Nombre de participant mis-à-jour.";
     }
 
+    /**
+     * Définit le nombre de billets pour une épreuve.
+     *
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @param nbBillets le nombre de billets
+     * @return un message de confirmation
+     */
     @Transactional
     public String setNbBillets(long idEpreuve, int nbBillets) {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
@@ -160,19 +239,40 @@ public class OrganisateurService {
         return "Nombre de billets mis-à-jour.";
     }
 
+    /**
+     * Récupère le nombre total de places disponibles.
+     *
+     * @return le nombre total de places disponibles
+     */
     public int getTotalPlacesDisponibles() {
         return epreuveRepository.getTotalPlacesDisponibles();
     }
 
+    /**
+     * Récupère le chiffre d'affaires total.
+     *
+     * @return le chiffre d'affaires total
+     */
     public double getChiffreAffaires() {
         Double chiffreAffaires = epreuveRepository.getChiffreAffaires();
         return chiffreAffaires != null ? chiffreAffaires : 0.0;
     }
 
+    /**
+     * Récupère le nombre total de ventes.
+     *
+     * @return le nombre total de ventes
+     */
     public int getTotalVentes() {
         return epreuveRepository.getTotalVentes();
     }
 
+    /**
+     * Associe un participant à une délégation.
+     *
+     * @param emailParticipant l'email du participant
+     * @param idDelegation     l'identifiant de la délégation
+     */
     @Transactional
     public void setDelegation(String emailParticipant, long idDelegation) {
         Participant participant = participantRepository.findByEmail(emailParticipant).orElseThrow(()
@@ -183,6 +283,11 @@ public class OrganisateurService {
         participantRepository.save(participant);
     }
 
+    /**
+     * Enregistre le résultat d'un participant pour une épreuve.
+     *
+     * @param resultatDTO les informations du résultat
+     */
     @Transactional
     public void setResultat(ResultatDTO resultatDTO) {
         Epreuve epreuve = epreuveRepository.findById(resultatDTO.getIdEpreuve()).orElseThrow(()

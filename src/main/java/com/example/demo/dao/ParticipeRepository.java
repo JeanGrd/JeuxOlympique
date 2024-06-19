@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ParticipeRepository extends CrudRepository<Participe, Long> {
 
-    Optional<Participe> findByDelegation_DelegationIdAndEpreuve_EpreuveId(long delegationId, long epreuveId);
+    Optional<Participe> findByDelegation_IdAndEpreuve_Id(long delegationId, long epreuveId);
 
 }

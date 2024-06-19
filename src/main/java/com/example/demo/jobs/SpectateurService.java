@@ -1,4 +1,4 @@
-package com.example.demo.metier;
+package com.example.demo.jobs;
 
 import com.example.demo.dao.BilletRepository;
 import com.example.demo.dao.EpreuveRepository;
@@ -18,9 +18,17 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Service pour gérer les opérations liées aux spectateurs.
+ * Ce service permet l'inscription, la suppression de compte, la consultation du programme,
+ * la réservation et le paiement des billets, ainsi que l'annulation des réservations.
+ */
 @Service
 public class SpectateurService {
 
+    /**
+     * Variable représentant le nombre maximum de billets par épreuve
+     */
     private static final int MAX_BILLETS_PAR_EPREUVE = 4;
     @Autowired
     private BilletRepository billetRepository;
@@ -29,22 +37,54 @@ public class SpectateurService {
     @Autowired
     private EpreuveRepository epreuveRepository;
 
+    /**
+     * Vérifie si un email existe dans le système.
+     *
+     * @param email l'email à vérifier
+     * @return true si l'email existe, false sinon
+     */
+    public boolean verifierEmailExist(String email) {
+        return spectateurRepository.findByEmail(email).isPresent();
+    }
+
+    /**
+     * Inscrit un nouveau spectateur dans le système.
+     *
+     * @param spectateur le spectateur à inscrire
+     */
     @Transactional
     public void inscription(Spectateur spectateur) {
         spectateurRepository.save(spectateur);
     }
 
+    /**
+     * Supprime le compte d'un spectateur basé sur son email.
+     *
+     * @param email l'email du spectateur dont le compte doit être supprimé
+     */
     @Transactional
     public void supprimerCompte(String email) {
         spectateurRepository.deleteByEmail(email);
     }
 
+    /**
+     * Consulte le programme de toutes les épreuves disponibles.
+     *
+     * @return une liste d'épreuves
+     */
     public List<Epreuve> consulterProgramme() {
         Iterable<Epreuve> epreuves = epreuveRepository.findAll();
         return StreamSupport.stream(epreuves.spliterator(), false)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Réserve un billet pour une épreuve spécifique pour un spectateur donné.
+     *
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @param email     l'email du spectateur
+     * @return un message de confirmation de la réservation
+     */
     @Transactional
     public String reserverBillet(long idEpreuve, String email) {
         Billet billet = new Billet();
@@ -63,6 +103,12 @@ public class SpectateurService {
         return "Réservation confirmée.";
     }
 
+    /**
+     * Effectue le paiement pour un billet réservé.
+     *
+     * @param idBillet l'identifiant du billet à payer
+     * @return un message de confirmation du paiement
+     */
     @Transactional
     public String payerBillet(long idBillet) {
         Billet billet = billetRepository.findById(idBillet).orElseThrow(() -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
@@ -79,9 +125,16 @@ public class SpectateurService {
         }
     }
 
+    /**
+     * Annule une réservation de billet pour un spectateur donné.
+     *
+     * @param idBillet l'identifiant du billet à annuler
+     * @param email    l'email du spectateur
+     * @return un message de confirmation de l'annulation
+     */
     @Transactional
     public String annulerReservation(long idBillet, String email) {
-        Billet billet = billetRepository.findByBilletIdAndSpectateur_Email(idBillet, email).orElseThrow(() -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
+        Billet billet = billetRepository.findByIdAndSpectateur_Email(idBillet, email).orElseThrow(() -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
         if (Objects.equals(billet.getEtat(), "Payé")) {
             Epreuve epreuve = billet.getEpreuve();
             LocalDate dateActuelle = LocalDate.now();
@@ -103,6 +156,13 @@ public class SpectateurService {
         }
     }
 
+    /**
+     * Calcule le montant du remboursement en fonction du nombre de jours avant l'épreuve.
+     *
+     * @param joursAvantEpreuve le nombre de jours avant l'épreuve
+     * @param prix              le prix initial du billet
+     * @return le montant du remboursement
+     */
     private double calculerRemboursement(long joursAvantEpreuve, double prix) {
         if (joursAvantEpreuve > 7) {
             return prix;
@@ -113,12 +173,15 @@ public class SpectateurService {
         }
     }
 
+    /**
+     * Compte le nombre de billets réservés par un spectateur pour une épreuve donnée.
+     *
+     * @param spectateur le spectateur
+     * @param epreuve    l'épreuve
+     * @return le nombre de billets réservés
+     */
     private int nombreBilletsPourEpreuve(Spectateur spectateur, Epreuve epreuve) {
         return billetRepository.countAllBySpectateurAndEpreuve(spectateur, epreuve);
-    }
-
-    public boolean verifierEmailExist(String email) {
-        return spectateurRepository.findByEmail(email).isPresent();
     }
 
 }

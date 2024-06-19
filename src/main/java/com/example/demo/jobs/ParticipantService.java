@@ -1,4 +1,4 @@
-package com.example.demo.metier;
+package com.example.demo.jobs;
 
 import com.example.demo.dao.*;
 import com.example.demo.entities.*;
@@ -13,6 +13,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Service pour gérer les opérations liées aux participants.
+ * Ce service permet de vérifier l'existence d'un email, inscrire et désengager les participants des épreuves,
+ * consulter les résultats des participants et de leurs délégations, et consulter le programme des épreuves.
+ */
 @Service
 public class ParticipantService {
 
@@ -27,10 +32,23 @@ public class ParticipantService {
     @Autowired
     private DelegationRepository delegationRepository;
 
+    /**
+     * Vérifie si un email existe dans le système.
+     *
+     * @param email l'email à vérifier
+     * @return true si l'email existe, false sinon
+     */
     public boolean verifierEmailExist(String email) {
         return participantRepository.findByEmail(email).isPresent();
     }
 
+    /**
+     * Inscrit un participant à une épreuve spécifique.
+     *
+     * @param email      l'email du participant
+     * @param epreuveId  l'identifiant de l'épreuve
+     * @return un message de confirmation de l'inscription
+     */
     @Transactional
     public String inscrireEpreuve(String email, long epreuveId) {
         Participant participant = participantRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));;
@@ -42,7 +60,7 @@ public class ParticipantService {
             return ("Le participant n'est associé à aucune délégation.");
         }
 
-        boolean alreadyExists = participeRepository.findByDelegation_DelegationIdAndEpreuve_EpreuveId(delegation.getDelegationId(), epreuveId).isPresent();
+        boolean alreadyExists = participeRepository.findByDelegation_IdAndEpreuve_Id(delegation.getId(), epreuveId).isPresent();
         // Vérifier si l'inscription est possible (avant 10 jours de la date de l'épreuve)
         LocalDate now = LocalDate.now();
         LocalDate dateEpreuve = epreuve.getDate();
@@ -69,6 +87,13 @@ public class ParticipantService {
         return "La délégation est bien inscrite";
     }
 
+    /**
+     * Désengage un participant d'une épreuve spécifique.
+     *
+     * @param email     l'email du participant
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @return un message de confirmation du désengagement
+     */
     @Transactional
     public String desengagerEpreuve(String email, long idEpreuve) {
         // Récupérer l'épreuve
@@ -76,16 +101,16 @@ public class ParticipantService {
                 .orElseThrow(() -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
         Participant participant = participantRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
-        Delegation delegation = delegationRepository.findById(participant.getDelegation().getDelegationId())
-                .orElseThrow(() -> new EntityNotFoundException("Délégation non trouvée avec l'id : " + participant.getDelegation().getDelegationId()));
+        Delegation delegation = delegationRepository.findById(participant.getDelegation().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Délégation non trouvée avec l'id : " + participant.getDelegation().getId()));
 
         // Vérifier si la date de l'épreuve est dans les 10 jours
         LocalDate now = LocalDate.now();
         long daysBetween = ChronoUnit.DAYS.between(now, epreuve.getDate());
 
         // Récupérer la participation
-        Participe participation = participeRepository.findByDelegation_DelegationIdAndEpreuve_EpreuveId(delegation.getDelegationId(), idEpreuve)
-                .orElseThrow(() -> new EntityNotFoundException("Relation participe non trouvée entre l'id de la délégation : " + delegation.getDelegationId() + ", et l'id de l'épreuve : " + idEpreuve));
+        Participe participation = participeRepository.findByDelegation_IdAndEpreuve_Id(delegation.getId(), idEpreuve)
+                .orElseThrow(() -> new EntityNotFoundException("Relation participe non trouvée entre l'id de la délégation : " + delegation.getId() + ", et l'id de l'épreuve : " + idEpreuve));
 
         if (daysBetween <= 10) {
             // Si dans les 10 jours, marquer comme forfait
@@ -93,33 +118,44 @@ public class ParticipantService {
             participeRepository.save(participation);
             return "Participant désengagé et marqué comme forfait";
         } else {
-            System.out.println(participation.getDelegation().getDelegationId());
-            System.out.println(participation.getEpreuve().getEpreuveId());
-            System.out.println(participation.getId());
-
             // Sinon, supprimer la participation
             participeRepository.delete(participation);
             return "Participant désengagé avec succès";
         }
     }
 
-    // Méthode pour consulter les résultats d'un participant spécifique
+    /**
+     * Consulte les résultats d'un participant spécifique.
+     *
+     * @param email l'email du participant
+     * @return une liste de résultats
+     */
     public List<Resultat> consulterResultatsParticipant(String email) {
         Participant participant = participantRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
         return resultatRepository.findByParticipant(participant);
     }
 
-    // Méthode pour consulter les résultats de la délégation d'un participant
+    /**
+     * Consulte les résultats de la délégation d'un participant.
+     *
+     * @param email l'email du participant
+     * @return une liste de résultats
+     */
     public List<Resultat> consulterResultatsParDelegation(String email) {
         Participant participant = participantRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
-        long idDelegation = participant.getDelegation().getDelegationId();
+        long idDelegation = participant.getDelegation().getId();
         Delegation delegation = delegationRepository.findById(idDelegation)
                 .orElseThrow(() -> new EntityNotFoundException("Delegation non trouvée avec l'id : " + idDelegation));
         return resultatRepository.findByParticipant_Delegation(delegation);
     }
 
+    /**
+     * Consulte le programme de toutes les épreuves disponibles.
+     *
+     * @return une liste d'épreuves
+     */
     public List<Epreuve> consulterProgramme() {
         Iterable<Epreuve> epreuves = epreuveRepository.findAll();
         return StreamSupport.stream(epreuves.spliterator(), false)

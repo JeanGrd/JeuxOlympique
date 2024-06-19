@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface BilletRepository extends CrudRepository<Billet, Long> {
     int countAllBySpectateurAndEpreuve(Spectateur spectateur, Epreuve epreuve);
 
-    Optional<Billet> findByBilletIdAndSpectateur_Email(long idBillet, String email);
+    Optional<Billet> findByIdAndSpectateur_Email(long idBillet, String email);
 }

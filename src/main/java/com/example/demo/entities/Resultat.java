@@ -5,20 +5,42 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entité représentant un résultat d'un participant dans une épreuve.
+ */
 @Getter
 @Setter
 @Entity
 public class Resultat {
 
+    /**
+     * L'identifiant unique du résultat.
+     */
     @Id
     @GeneratedValue
-    private long resultatId;
+    private long id;
+
+    /**
+     * Les points obtenus par le participant dans l'épreuve.
+     */
     private double point;
+
+    /**
+     * La position du participant dans l'épreuve.
+     */
     private int position;
+
+    /**
+     * Le participant associé à ce résultat.
+     */
     @ManyToOne
-    @JoinColumn(name = "participantId")
+    @JoinColumn(name = "idParticipant")
     private Participant participant;
+
+    /**
+     * L'épreuve associée à ce résultat.
+     */
     @ManyToOne
-    @JoinColumn(name = "epreuveId")
+    @JoinColumn(name = "idEpreuve")
     private Epreuve epreuve;
 }

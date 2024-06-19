@@ -3,7 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.dto.EpreuveDTO;
 import com.example.demo.dto.ResultatDTO;
 import com.example.demo.entities.*;
-import com.example.demo.metier.OrganisateurService;
+import com.example.demo.jobs.OrganisateurService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

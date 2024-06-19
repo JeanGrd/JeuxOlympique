@@ -3,7 +3,7 @@ package com.example.demo;
 import com.example.demo.dto.EpreuveDTO;
 import com.example.demo.dto.ResultatDTO;
 import com.example.demo.entities.*;
-import com.example.demo.metier.*;
+import com.example.demo.jobs.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,8 +29,12 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         SpringApplication.run(JeuxMiagiquesApplication.class, args);
     }
 
+    /**
+     * Ce code
+     * @param args
+     */
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         /*
          *
@@ -38,10 +42,26 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          *
          */
 
-        Organisateur organisateur = adminService.creerOrganisateur("Admin", "root", "admin@root.fr", "orga");
+        Organisateur organisateur = new Organisateur();
+        organisateur.setPrenom("Admin");
+        organisateur.setNom("Root");
+        organisateur.setRole("organiser");
+        organisateur.setEmail("admin@root.fr");
+
+        adminService.creerOrganisateur(organisateur);
         // Création d'une infrastructure sportive
-        InfrastructureSportive stageOlympique = adminService.creerInfrastructureSportive("Stade Olympique", 10000, "1234 Rue Olympique");
-        InfrastructureSportive stadeToulousain = adminService.creerInfrastructureSportive("Stade Toulousain", 10000, "1234 Rue Olympique");
+        InfrastructureSportive stadeOlympique = new InfrastructureSportive();
+        stadeOlympique.setNom("Stade Olympique");
+        stadeOlympique.setAdresse("1234 Rue Olympique");
+        stadeOlympique.setCapacite(10000);
+
+        InfrastructureSportive stadeToulousain = new InfrastructureSportive();
+        stadeToulousain.setNom("Stade Toulousain");
+        stadeToulousain.setAdresse("1234 Rue Olympique");
+        stadeToulousain.setCapacite(5000);
+
+        adminService.creerInfrastructureSportive(stadeOlympique);
+        adminService.creerInfrastructureSportive(stadeToulousain);
 
         /*
          *
@@ -56,7 +76,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         epreuveDTO1.setNbBillets(1500);
         epreuveDTO1.setDate(LocalDate.of(2025, 10, 2));
         epreuveDTO1.setNbDelegations(15);
-        epreuveDTO1.setIdInfrastructure(stadeToulousain.getInfrastructureId());
+        epreuveDTO1.setIdInfrastructure(stadeToulousain.getId());
 
         EpreuveDTO epreuveDTO2 = new EpreuveDTO();
         epreuveDTO2.setNom("100m sprint");
@@ -64,7 +84,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         epreuveDTO2.setNbBillets(1000);
         epreuveDTO2.setDate(LocalDate.of(2025, 12, 2));
         epreuveDTO2.setNbDelegations(10);
-        epreuveDTO2.setIdInfrastructure(stageOlympique.getInfrastructureId());
+        epreuveDTO2.setIdInfrastructure(stadeOlympique.getId());
 
         Epreuve e = organisateurService.creerEpreuve(epreuveDTO1);
         organisateurService.creerEpreuve(epreuveDTO2);
@@ -73,17 +93,18 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         Lans.setPrenom("Lans");
         Lans.setNom("Robert");
         Lans.setEmail("robert@lans.fr");
+
         Participant Roger = new Participant();
         Roger.setPrenom("Roger");
         Roger.setNom("Dons");
         Roger.setEmail("dons@roger.fr");
+
         Participant Christina = new Participant();
         Christina.setPrenom("Christina");
         Christina.setNom("Garcia");
         Christina.setEmail("garcia@christina.fr");
 
         organisateurService.creerParticipant(Lans);
-        System.out.println("hello");
         organisateurService.creerParticipant(Roger);
         organisateurService.creerParticipant(Christina);
 
@@ -102,9 +123,9 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         organisateurService.setDelegation("robert@lans.fr", 1);
 
         // Mettre en place le nombre de billets
-        organisateurService.setNbBillets(e.getEpreuveId(), 30);
+        organisateurService.setNbBillets(e.getId(), 30);
 
-        organisateurService.setNbParticipants(e.getEpreuveId(), 450);
+        organisateurService.setNbParticipants(e.getId(), 450);
 
         // Création d'un contrôleur
         Controleur c = new Controleur();
@@ -131,9 +152,9 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         Jean.setEmail("guiraud@jean.fr");
 
         Spectateur Touria = new Spectateur();
-        Ana.setPrenom("Touria");
-        Ana.setNom("Sayagh");
-        Ana.setEmail("sayagh@touria.fr");
+        Touria.setPrenom("Touria");
+        Touria.setNom("Sayagh");
+        Touria.setEmail("sayagh@touria.fr");
 
         spectateurService.inscription(Ana);
         spectateurService.inscription(Jean);
@@ -146,8 +167,8 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         spectateurService.supprimerCompte(Ana.getEmail());
 
         // Use case: Réserver des billets pour assister aux épreuves
-        spectateurService.reserverBillet(e.getEpreuveId(), Jean.getEmail());
-        spectateurService.reserverBillet(e.getEpreuveId(), Jean.getEmail());
+        spectateurService.reserverBillet(e.getId(), Jean.getEmail());
+        spectateurService.reserverBillet(e.getId(), Jean.getEmail());
 
         // Use case: payer en ligne
         spectateurService.payerBillet(1);
@@ -165,10 +186,10 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         System.out.println(participantService.consulterProgramme());
 
         // Use case: S'inscrire à des épreuves au nom de sa délégation
-        participantService.inscrireEpreuve(Roger.getEmail(), e.getEpreuveId());
-        participantService.inscrireEpreuve(Christina.getEmail(), e.getEpreuveId());
+        participantService.inscrireEpreuve(Roger.getEmail(), e.getId());
+        participantService.inscrireEpreuve(Christina.getEmail(), e.getId());
 
-        participantService.desengagerEpreuve(Roger.getEmail(), e.getEpreuveId());
+        participantService.desengagerEpreuve(Roger.getEmail(), e.getId());
 
         // Use case: consulter ses résultats
         System.out.println(participantService.consulterResultatsParticipant(Roger.getEmail()));
@@ -189,7 +210,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         ResultatDTO resultat = new ResultatDTO();
         resultat.setPosition(1);
         resultat.setPoint(12);
-        resultat.setIdEpreuve(e.getEpreuveId());
+        resultat.setIdEpreuve(e.getId());
         resultat.setEmailParticipant("robert@lans.fr");
         organisateurService.setResultat(resultat);
 
