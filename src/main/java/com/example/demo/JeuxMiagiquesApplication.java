@@ -171,7 +171,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         spectateurService.reserverBillet(e.getId(), Jean.getEmail());
 
         // Use case: payer en ligne
-        spectateurService.payerBillet(1);
+        spectateurService.payerBillet(1, Jean.getEmail());
 
         //Use case: Annuler une réservation
         spectateurService.annulerReservation(2, Jean.getEmail());

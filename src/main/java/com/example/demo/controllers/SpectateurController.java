@@ -58,9 +58,9 @@ public class SpectateurController {
     }
 
     @PostMapping("/billet")
-    public ResponseEntity<?> reserverBillet(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<?> reserverBillet(@RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(spectateurService.reserverBillet(id, session.getAttribute("email").toString()));
+            return ResponseEntity.ok(spectateurService.reserverBillet(idEpreuve, session.getAttribute("email").toString()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
@@ -69,7 +69,7 @@ public class SpectateurController {
     @PostMapping("/billet/payer")
     public ResponseEntity<?> payerBillet(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(spectateurService.payerBillet(id));
+            return ResponseEntity.ok(spectateurService.payerBillet(id, session.getAttribute("email").toString() ));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }

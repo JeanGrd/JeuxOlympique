@@ -88,8 +88,10 @@ public class SpectateurService {
     @Transactional
     public String reserverBillet(long idEpreuve, String email) {
         Billet billet = new Billet();
-        Spectateur spectateur = spectateurRepository.findByEmail(email).orElseThrow();
-        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(() -> new EntityNotFoundException("Epreuve non trouvée avec l'id' : " + idEpreuve));
+        Spectateur spectateur = spectateurRepository.findByEmail(email).orElseThrow(()
+                -> new EntityNotFoundException("Spectateur non trouvé avec l'email' : " + email));;
+        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
+                -> new EntityNotFoundException("Epreuve non trouvée avec l'id' : " + idEpreuve));
         billet.setSpectateur(spectateur);
         billet.setEpreuve(epreuve);
         billet.setPrix(epreuve.getPrix());
@@ -110,8 +112,9 @@ public class SpectateurService {
      * @return un message de confirmation du paiement
      */
     @Transactional
-    public String payerBillet(long idBillet) {
-        Billet billet = billetRepository.findById(idBillet).orElseThrow(() -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
+    public String payerBillet(long idBillet, String email) {
+        Billet billet = billetRepository.findByIdAndSpectateur_Email(idBillet, email).orElseThrow(()
+                -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
         if (Objects.equals(billet.getEtat(), "Réservé")) {
             billet.setEtat("Payé");
             billetRepository.save(billet);
@@ -134,7 +137,8 @@ public class SpectateurService {
      */
     @Transactional
     public String annulerReservation(long idBillet, String email) {
-        Billet billet = billetRepository.findByIdAndSpectateur_Email(idBillet, email).orElseThrow(() -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
+        Billet billet = billetRepository.findByIdAndSpectateur_Email(idBillet, email).orElseThrow(()
+                -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
         if (Objects.equals(billet.getEtat(), "Payé")) {
             Epreuve epreuve = billet.getEpreuve();
             LocalDate dateActuelle = LocalDate.now();
