@@ -1,11 +1,11 @@
 // InfrastructureSportive.java
 package com.example.demo.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,4 +18,6 @@ public class InfrastructureSportive {
     private String nom;
     private String adresse;
     private int capacite;
+    @OneToMany(mappedBy = "infrastructureSportive", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Epreuve> epreuves;
 }

@@ -40,8 +40,8 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
 
         Organisateur organisateur = adminService.creerOrganisateur("Admin", "root", "admin@root.fr", "orga");
         // Création d'une infrastructure sportive
-        adminService.creerInfrastructureSportive("Stade Olympique", 10000, "1234 Rue Olympique");
-        adminService.creerInfrastructureSportive("Stade Toulousain", 10000, "1234 Rue Olympique");
+        InfrastructureSportive stageOlympique = adminService.creerInfrastructureSportive("Stade Olympique", 10000, "1234 Rue Olympique");
+        InfrastructureSportive stadeToulousain = adminService.creerInfrastructureSportive("Stade Toulousain", 10000, "1234 Rue Olympique");
 
         /*
          *
@@ -50,19 +50,21 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          */
 
         // Création d'une épreuve
-        EpreuveDTO epreuveDTO2 = new EpreuveDTO();
-        epreuveDTO2.setNom("100m sprint");
-        epreuveDTO2.setPrix(115.5);
-        epreuveDTO2.setNbBillets(1000);
-        epreuveDTO2.setDate(LocalDate.of(2025, 12, 2));
-        epreuveDTO2.setNbDelegations(10);
-
         EpreuveDTO epreuveDTO1 = new EpreuveDTO();
         epreuveDTO1.setNom("300m sprint");
         epreuveDTO1.setPrix(135.5);
         epreuveDTO1.setNbBillets(1500);
         epreuveDTO1.setDate(LocalDate.of(2025, 10, 2));
         epreuveDTO1.setNbDelegations(15);
+        epreuveDTO1.setIdInfrastructure(stadeToulousain.getInfrastructureId());
+
+        EpreuveDTO epreuveDTO2 = new EpreuveDTO();
+        epreuveDTO2.setNom("100m sprint");
+        epreuveDTO2.setPrix(115.5);
+        epreuveDTO2.setNbBillets(1000);
+        epreuveDTO2.setDate(LocalDate.of(2025, 12, 2));
+        epreuveDTO2.setNbDelegations(10);
+        epreuveDTO2.setIdInfrastructure(stageOlympique.getInfrastructureId());
 
         Epreuve e = organisateurService.creerEpreuve(epreuveDTO1);
         organisateurService.creerEpreuve(epreuveDTO2);
@@ -171,6 +173,8 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         ResultatDTO resultat = new ResultatDTO();
         resultat.setPosition(1);
         resultat.setPoint(12);
+        resultat.setIdEpreuve(e.getEpreuveId());
+        resultat.setEmailParticipant("robert@lans.fr");
         organisateurService.setResultat(resultat);
 
         System.out.println(organisateurService.getTotalVentes());

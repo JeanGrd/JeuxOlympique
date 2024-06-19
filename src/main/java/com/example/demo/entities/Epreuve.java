@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,5 +24,10 @@ public class Epreuve {
     @ManyToOne
     @JoinColumn(name = "infrastructureId")
     private InfrastructureSportive infrastructureSportive;
-
+    @OneToMany(mappedBy = "epreuve", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Billet> billets;
+    @OneToMany(mappedBy = "epreuve", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Resultat> resultats;
+    @OneToMany(mappedBy = "epreuve", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participe> participes;
 }

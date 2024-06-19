@@ -1,11 +1,10 @@
 package com.example.demo.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,11 +12,14 @@ import lombok.Setter;
 public class Delegation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private long delegationId;
     private String nom;
     private int nb_medaille_or;
     private int nb_medaille_argent;
     private int nb_medaille_bronze;
-
+    @OneToMany(mappedBy = "delegation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participe> participes;
+    @OneToMany(mappedBy = "delegation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participant> participants;
 }
