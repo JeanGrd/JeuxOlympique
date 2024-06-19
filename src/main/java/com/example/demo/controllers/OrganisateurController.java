@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.EpreuveDTO;
 import com.example.demo.entities.*;
 import com.example.demo.metier.OrganisateurService;
 import jakarta.servlet.http.HttpSession;
@@ -75,14 +76,15 @@ public class OrganisateurController {
     }
 
     @PutMapping("/epreuve")
-    public ResponseEntity<String> modifierEpreuve(@RequestBody long idEpreuve, Epreuve epreuve, @RequestParam Long idInfrastructure, HttpSession session) {
+    public ResponseEntity<String> modifierEpreuve(@RequestBody EpreuveDTO epreuveDTO, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            organisateurService.modifierEpreuve(idEpreuve, epreuve, idInfrastructure);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Epreuve créée.");
+            organisateurService.modifierEpreuve(epreuveDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Epreuve modifiée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
+
 
     @PostMapping("/participant")
     public ResponseEntity<String> creerParticipant(@RequestBody Participant participant, HttpSession session) {

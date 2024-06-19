@@ -1,6 +1,7 @@
 package com.example.demo.metier;
 
 import com.example.demo.dao.*;
+import com.example.demo.dto.EpreuveDTO;
 import com.example.demo.entities.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,17 +61,31 @@ public class OrganisateurService {
         epreuveRepository.delete(epreuve);
     }
 
-    public void modifierEpreuve(long id, Epreuve updatedEpreuve, long idInfrastructure) {
-        Epreuve epreuve = epreuveRepository.findById(id).orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + id));
+    public void modifierEpreuve(EpreuveDTO epreuveDTO) {
+        Epreuve epreuve = epreuveRepository.findById(epreuveDTO.getIdEpreuve())
+                .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveDTO.getIdEpreuve()));
 
-        InfrastructureSportive infra = infrastructureSportiveRepository.findById(idInfrastructure).orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec l'id : " + idInfrastructure));
+        if (epreuveDTO.getIdInfrastructure() != null) {
+            InfrastructureSportive infra = infrastructureSportiveRepository.findById(epreuveDTO.getIdInfrastructure())
+                    .orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec l'id : " + epreuveDTO.getIdInfrastructure()));
+            epreuve.setInfrastructureSportive(infra);
+        }
 
-        epreuve.setNom(updatedEpreuve.getNom());
-        epreuve.setDate(updatedEpreuve.getDate());
-        epreuve.setNb_delegations(updatedEpreuve.getNb_delegations());
-        epreuve.setNb_billets(updatedEpreuve.getNb_billets());
-        epreuve.setPrix(updatedEpreuve.getPrix());
-        epreuve.setInfrastructureSportive(infra);
+        if (epreuveDTO.getNom() != null) {
+            epreuve.setNom(epreuveDTO.getNom());
+        }
+        if (epreuveDTO.getDate() != null) {
+            epreuve.setDate(epreuveDTO.getDate());
+        }
+        if (epreuveDTO.getNbDelegations() != null) {
+            epreuve.setNb_delegations(epreuveDTO.getNbDelegations());
+        }
+        if (epreuveDTO.getNbBillets() != null) {
+            epreuve.setNb_billets(epreuveDTO.getNbBillets());
+        }
+        if (epreuveDTO.getPrix() != null) {
+            epreuve.setPrix(epreuveDTO.getPrix());
+        }
 
         epreuveRepository.save(epreuve);
     }

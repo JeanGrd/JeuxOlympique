@@ -18,7 +18,7 @@ public class Epreuve {
     private LocalDate date;
     private int nb_delegations;
     private int nb_billets;
-    private float prix;
+    private double prix;
 
     @ManyToOne
     @JoinColumn(name = "infrastructureId")
