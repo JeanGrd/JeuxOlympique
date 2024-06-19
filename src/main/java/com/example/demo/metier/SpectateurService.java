@@ -6,6 +6,7 @@ import com.example.demo.dao.SpectateurRepository;
 import com.example.demo.entities.Billet;
 import com.example.demo.entities.Epreuve;
 import com.example.demo.entities.Spectateur;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class SpectateurService {
     public String reserverBillet(long idEpreuve, String email) {
         Billet billet = new Billet();
         Spectateur spectateur = spectateurRepository.findByEmail(email).orElseThrow();
-        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow();
+        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(() -> new EntityNotFoundException("Epreuve non trouvée avec l'id' : " + idEpreuve));
         billet.setSpectateur(spectateur);
         billet.setEpreuve(epreuve);
         billet.setPrix(epreuve.getPrix());
@@ -67,8 +68,8 @@ public class SpectateurService {
     }
 
     @Transactional
-    public String payerBillet(long billetId) {
-        Billet billet = billetRepository.findById(billetId).orElseThrow();
+    public String payerBillet(long idBillet) {
+        Billet billet = billetRepository.findById(idBillet).orElseThrow(() -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
         if (Objects.equals(billet.getEtat(), "Réservé")) {
             billet.setEtat("Payé");
             billetRepository.save(billet);
@@ -83,8 +84,8 @@ public class SpectateurService {
     }
 
     @Transactional
-    public String annulerReservation(long billetId, String email) {
-        Billet billet = billetRepository.findByBilletIdAndSpectateur_Email(billetId, email).orElseThrow();
+    public String annulerReservation(long idBillet, String email) {
+        Billet billet = billetRepository.findByBilletIdAndSpectateur_Email(idBillet, email).orElseThrow(() -> new EntityNotFoundException("Billet non trouvé avec l'id' : " + idBillet));;
         if (Objects.equals(billet.getEtat(), "Payé")) {
             Epreuve epreuve = billet.getEpreuve();
             LocalDate dateActuelle = LocalDate.now();

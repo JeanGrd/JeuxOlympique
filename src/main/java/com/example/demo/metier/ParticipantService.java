@@ -33,7 +33,7 @@ public class ParticipantService {
 
     @Transactional
     public String inscrireEpreuve(String email, long epreuveId) {
-        Participant participant = participantRepository.findByEmail(email).orElseThrow();
+        Participant participant = participantRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));;
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
 
         Delegation delegation = participant.getDelegation();
@@ -70,22 +70,22 @@ public class ParticipantService {
     }
 
     @Transactional
-    public String desengagerEpreuve(String email, long epreuveId) {
+    public String desengagerEpreuve(String email, long idEpreuve) {
         // Récupérer l'épreuve
-        Epreuve epreuve = epreuveRepository.findById(epreuveId)
-                .orElseThrow(() -> new EntityNotFoundException("Epreuve not found"));
+        Epreuve epreuve = epreuveRepository.findById(idEpreuve)
+                .orElseThrow(() -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
         Participant participant = participantRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Participant not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
         Delegation delegation = delegationRepository.findById(participant.getDelegation().getDelegationId())
-                .orElseThrow(() -> new EntityNotFoundException("Epreuve not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Délégation non trouvée avec l'id : " + participant.getDelegation().getDelegationId()));
 
         // Vérifier si la date de l'épreuve est dans les 10 jours
         LocalDate now = LocalDate.now();
         long daysBetween = ChronoUnit.DAYS.between(now, epreuve.getDate());
 
         // Récupérer la participation
-        Participe participation = participeRepository.findByDelegation_DelegationIdAndEpreuve_EpreuveId(delegation.getDelegationId(), epreuveId)
-                .orElseThrow(() -> new EntityNotFoundException("Participation not found"));
+        Participe participation = participeRepository.findByDelegation_DelegationIdAndEpreuve_EpreuveId(delegation.getDelegationId(), idEpreuve)
+                .orElseThrow(() -> new EntityNotFoundException("Relation participe non trouvée entre l'id de la délégation : " + delegation.getDelegationId() + ", et l'id de l'épreuve : " + idEpreuve));
 
         if (daysBetween <= 10) {
             // Si dans les 10 jours, marquer comme forfait
@@ -105,15 +105,18 @@ public class ParticipantService {
 
     // Méthode pour consulter les résultats d'un participant spécifique
     public List<Resultat> consulterResultatsParticipant(String email) {
-        Participant participant = participantRepository.findByEmail(email).orElseThrow();
+        Participant participant = participantRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
         return resultatRepository.findByParticipant(participant);
     }
 
     // Méthode pour consulter les résultats de la délégation d'un participant
     public List<Resultat> consulterResultatsParDelegation(String email) {
-        Participant participant = participantRepository.findByEmail(email).orElseThrow();
-        long delegationId = participant.getDelegation().getDelegationId();
-        Delegation delegation = delegationRepository.findById(delegationId).orElseThrow();
+        Participant participant = participantRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
+        long idDelegation = participant.getDelegation().getDelegationId();
+        Delegation delegation = delegationRepository.findById(idDelegation)
+                .orElseThrow(() -> new EntityNotFoundException("Delegation non trouvée avec l'id : " + idDelegation));
         return resultatRepository.findByParticipant_Delegation(delegation);
     }
 
