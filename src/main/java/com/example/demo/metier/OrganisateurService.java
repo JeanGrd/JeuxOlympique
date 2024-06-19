@@ -2,6 +2,7 @@ package com.example.demo.metier;
 
 import com.example.demo.dao.*;
 import com.example.demo.dto.EpreuveDTO;
+import com.example.demo.dto.ResultatDTO;
 import com.example.demo.entities.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class OrganisateurService {
         return organisateurRepository.findByEmail(email).isPresent();
     }
 
+    @Transactional
     public void creerDelegation(Delegation delegation) {
         delegationRepository.save(delegation);
     }
@@ -48,8 +50,16 @@ public class OrganisateurService {
         delegationRepository.delete(delegation);
     }
 
-    public Epreuve creerEpreuve(Epreuve epreuve, long idInfrastructure) {
-        InfrastructureSportive infra = infrastructureSportiveRepository.findById(idInfrastructure).orElseThrow(() -> new RuntimeException("Infrastructure sportive non trouvée avec l'id : " + idInfrastructure));
+    @Transactional
+    public Epreuve creerEpreuve(EpreuveDTO epreuveDTO) {
+        Epreuve epreuve = new Epreuve();
+        epreuve.setNom(epreuveDTO.getNom());
+        epreuve.setDate(epreuveDTO.getDate());
+        epreuve.setNb_delegations(epreuveDTO.getNbDelegations());
+        epreuve.setNb_billets(epreuveDTO.getNbBillets());
+        epreuve.setPrix(epreuveDTO.getPrix());
+        InfrastructureSportive infra = infrastructureSportiveRepository.findById(epreuveDTO.getIdInfrastructure()).orElseThrow(()
+                -> new RuntimeException("Infrastructure sportive non trouvée avec l'id : " + epreuveDTO.getIdInfrastructure()));
         epreuve.setInfrastructureSportive(infra);
         return epreuveRepository.save(epreuve);
     }
@@ -61,6 +71,7 @@ public class OrganisateurService {
         epreuveRepository.delete(epreuve);
     }
 
+    @Transactional
     public void modifierEpreuve(EpreuveDTO epreuveDTO) {
         Epreuve epreuve = epreuveRepository.findById(epreuveDTO.getIdEpreuve())
                 .orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveDTO.getIdEpreuve()));
@@ -90,31 +101,36 @@ public class OrganisateurService {
         epreuveRepository.save(epreuve);
     }
 
+    @Transactional
     public Participant creerParticipant(Participant participant) {
         return participantRepository.save(participant);
     }
 
+    @Transactional
     public void supprimerParticipant(long id) {
         Participant participant = participantRepository.findById(id).orElseThrow(() -> new RuntimeException("participant non trouvée avec id : " + id));
         participantRepository.delete(participant);
     }
 
+    @Transactional
     public Controleur creerControleur(Controleur controleur) {
         return controleurRepository.save(controleur);
     }
 
+    @Transactional
     public void supprimerControleur(String email) {
         Controleur controleur = controleurRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("controleur non trouvée avec email : " + email));
         controleurRepository.delete(controleur);
     }
 
-
+    @Transactional
     public void setDate(LocalDate date, long idEpreuve) {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow();
         epreuve.setDate(date);
         epreuveRepository.save(epreuve);
     }
 
+    @Transactional
     public String setNbParticipants(long epreuveId, int nbParticipant) {
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
         int tailleMax = epreuve.getInfrastructureSportive().getCapacite();
@@ -126,6 +142,7 @@ public class OrganisateurService {
         return "Nombre de participant mis-à-jour.";
     }
 
+    @Transactional
     public String setNbBillets(long epreuveId, int nbBillets) {
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
         if (epreuve.getInfrastructureSportive().getCapacite() < nbBillets) {
@@ -150,6 +167,7 @@ public class OrganisateurService {
         return epreuveRepository.getTotalVentes();
     }
 
+    @Transactional
     public void setDelegation(String emailParticipant, long idDelegation) {
         Participant participant = participantRepository.findByEmail(emailParticipant).orElseThrow(() -> new RuntimeException("Participant non trouvée avec le nom : " + emailParticipant));
         Delegation delegation = delegationRepository.findById(idDelegation).orElseThrow(() -> new RuntimeException("Délégation non trouvée avec l'id : " + idDelegation));
@@ -157,9 +175,13 @@ public class OrganisateurService {
         participantRepository.save(participant);
     }
 
-    public void setResultat(Resultat resultat, long epreuveId, String emailParticipant) {
-        Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + epreuveId));
-        Participant participant = participantRepository.findByEmail(emailParticipant).orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'email : " + emailParticipant));
+    @Transactional
+    public void setResultat(ResultatDTO resultatDTO) {
+        Epreuve epreuve = epreuveRepository.findById(resultatDTO.getIdEpreuve()).orElseThrow(() -> new RuntimeException("Epreuve non trouvée avec l'id : " + resultatDTO.getIdEpreuve()));
+        Participant participant = participantRepository.findByEmail(resultatDTO.getEmailParticipant()).orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'email : " + resultatDTO.getEmailParticipant()));
+        Resultat resultat = new Resultat();
+        resultat.setPoint(resultatDTO.getPoint());
+        resultat.setPosition(resultatDTO.getPosition());
         resultat.setEpreuve(epreuve);
         resultat.setParticipant(participant);
 

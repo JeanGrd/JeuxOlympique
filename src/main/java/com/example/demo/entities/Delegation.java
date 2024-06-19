@@ -15,7 +15,6 @@ public class Delegation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long delegationId;
-
     private String nom;
     private int nb_medaille_or;
     private int nb_medaille_argent;

@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.dto.EpreuveDTO;
+import com.example.demo.dto.ResultatDTO;
 import com.example.demo.entities.*;
 import com.example.demo.metier.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,22 +50,22 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          */
 
         // Création d'une épreuve
-        Epreuve e1 = new Epreuve();
-        e1.setNom("100m sprint");
-        e1.setPrix(115.5F);
-        e1.setNb_billets(1000);
-        e1.setDate(LocalDate.of(2025, 12, 2));
-        e1.setNb_delegations(10);
+        EpreuveDTO epreuveDTO2 = new EpreuveDTO();
+        epreuveDTO2.setNom("100m sprint");
+        epreuveDTO2.setPrix(115.5);
+        epreuveDTO2.setNbBillets(1000);
+        epreuveDTO2.setDate(LocalDate.of(2025, 12, 2));
+        epreuveDTO2.setNbDelegations(10);
 
-        Epreuve e2 = new Epreuve();
-        e2.setNom("300m sprint");
-        e2.setPrix(135.5F);
-        e2.setNb_billets(1500);
-        e2.setDate(LocalDate.of(2025, 10, 2));
-        e2.setNb_delegations(15);
+        EpreuveDTO epreuveDTO1 = new EpreuveDTO();
+        epreuveDTO1.setNom("300m sprint");
+        epreuveDTO1.setPrix(135.5);
+        epreuveDTO1.setNbBillets(1500);
+        epreuveDTO1.setDate(LocalDate.of(2025, 10, 2));
+        epreuveDTO1.setNbDelegations(15);
 
-        Epreuve e = organisateurService.creerEpreuve(e1, 1);
-        organisateurService.creerEpreuve(e2, 2);
+        Epreuve e = organisateurService.creerEpreuve(epreuveDTO1);
+        organisateurService.creerEpreuve(epreuveDTO2);
 
         Participant Lans = new Participant();
         Lans.setPrenom("Lans");
@@ -166,10 +168,10 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         //organisateurService.supprimerEpreuve("100m sprint");
         //organisateurService.supprimerDelegation("USA");
 
-        Resultat resultat = new Resultat();
+        ResultatDTO resultat = new ResultatDTO();
         resultat.setPosition(1);
         resultat.setPoint(12);
-        organisateurService.setResultat(resultat, e.getEpreuveId(), Roger.getEmail());
+        organisateurService.setResultat(resultat);
 
         System.out.println(organisateurService.getTotalVentes());
         System.out.println(organisateurService.getTotalPlacesDisponibles());

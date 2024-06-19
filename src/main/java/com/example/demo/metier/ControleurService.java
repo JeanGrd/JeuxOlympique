@@ -3,6 +3,7 @@ package com.example.demo.metier;
 import com.example.demo.dao.BilletRepository;
 import com.example.demo.dao.ControleurRepository;
 import com.example.demo.entities.Billet;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

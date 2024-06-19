@@ -28,6 +28,7 @@ public class SpectateurService {
     @Autowired
     private EpreuveRepository epreuveRepository;
 
+    @Transactional
     public Spectateur inscription(String nom, String prenom, String email) {
         Spectateur spectateur = new Spectateur();
         spectateur.setNom(nom);
@@ -47,6 +48,7 @@ public class SpectateurService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public String reserverBillet(long idEpreuve, String email) {
         Billet billet = new Billet();
         Spectateur spectateur = spectateurRepository.findByEmail(email).orElseThrow();
@@ -64,6 +66,7 @@ public class SpectateurService {
         return "Réservation confirmée.";
     }
 
+    @Transactional
     public String payerBillet(long billetId) {
         Billet billet = billetRepository.findById(billetId).orElseThrow();
         if (Objects.equals(billet.getEtat(), "Réservé")) {
@@ -79,6 +82,7 @@ public class SpectateurService {
         }
     }
 
+    @Transactional
     public String annulerReservation(long billetId, String email) {
         Billet billet = billetRepository.findByBilletIdAndSpectateur_Email(billetId, email).orElseThrow();
         if (Objects.equals(billet.getEtat(), "Payé")) {
@@ -120,7 +124,4 @@ public class SpectateurService {
         return spectateurRepository.findByEmail(email).isPresent();
     }
 
-    public String confirmationAnnulation(double montantRembourse) {
-        return String.format("Votre annulation est confirmée. Vous serez remboursé de %.2f euros.", montantRembourse);
-    }
 }

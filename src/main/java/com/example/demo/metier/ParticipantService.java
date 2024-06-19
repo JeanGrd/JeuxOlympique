@@ -3,6 +3,7 @@ package com.example.demo.metier;
 import com.example.demo.dao.*;
 import com.example.demo.entities.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class ParticipantService {
         return participantRepository.findByEmail(email).isPresent();
     }
 
+    @Transactional
     public String inscrireEpreuve(String email, long epreuveId) {
         Participant participant = participantRepository.findByEmail(email).orElseThrow();
         Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
@@ -67,6 +69,7 @@ public class ParticipantService {
         return "La délégation est bien inscrite";
     }
 
+    @Transactional
     public String desengagerEpreuve(String email, long epreuveId) {
         // Récupérer l'épreuve
         Epreuve epreuve = epreuveRepository.findById(epreuveId)

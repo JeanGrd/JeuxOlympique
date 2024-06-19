@@ -3,10 +3,12 @@ package com.example.demo.metier;
 import com.example.demo.dao.*;
 import com.example.demo.entities.InfrastructureSportive;
 import com.example.demo.entities.Organisateur;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class AdminService {
 
     @Autowired

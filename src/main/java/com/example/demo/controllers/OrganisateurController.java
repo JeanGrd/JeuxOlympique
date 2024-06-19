@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.EpreuveDTO;
+import com.example.demo.dto.ResultatDTO;
 import com.example.demo.entities.*;
 import com.example.demo.metier.OrganisateurService;
 import jakarta.servlet.http.HttpSession;
@@ -56,9 +57,9 @@ public class OrganisateurController {
     }
 
     @PostMapping("/epreuve")
-    public ResponseEntity<String> creerEpreuve(@RequestBody Epreuve epreuve, @RequestParam Long idInfrastructure, HttpSession session) {
+    public ResponseEntity<String> creerEpreuve(@RequestBody EpreuveDTO epreuveDTO, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            organisateurService.creerEpreuve(epreuve, idInfrastructure);
+            organisateurService.creerEpreuve(epreuveDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Epreuve créée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
@@ -167,9 +168,9 @@ public class OrganisateurController {
     }
 
     @PostMapping("/epreuve/resultat")
-    public ResponseEntity<String> setResultat(@RequestBody Resultat resultat, @RequestParam long idEpreuve, @RequestParam String emailParticipant, HttpSession session) {
+    public ResponseEntity<String> setResultat(@RequestBody ResultatDTO resultatDTO, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            organisateurService.setResultat(resultat, idEpreuve, emailParticipant);
+            organisateurService.setResultat(resultatDTO);
             return ResponseEntity.ok("Résultat mis-à-jour");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
