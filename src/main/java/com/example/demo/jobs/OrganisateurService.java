@@ -34,6 +34,8 @@ public class OrganisateurService {
     private ControleurRepository controleurRepository;
     @Autowired
     private ResultatRepository resultatRepository;
+    @Autowired
+    private ParticipeRepository participeRepository;
 
     /**
      * Vérifie si un email existe dans le système.
@@ -128,10 +130,14 @@ public class OrganisateurService {
             epreuve.setDate(epreuveDTO.getDate());
         }
         if (epreuveDTO.getNbDelegations() != null) {
-            epreuve.setNb_delegations(epreuveDTO.getNbDelegations());
+            if (epreuve.getInfrastructureSportive().getCapacite() < epreuveDTO.getNbDelegations()) {
+                throw new IllegalArgumentException("Nombre de billets supérieur à la taille maximum de l'infrastructure.");
+            } else {
+                epreuve.setNb_delegations(epreuveDTO.getNbDelegations());
+            }
         }
         if (epreuveDTO.getNbBillets() != null) {
-            epreuve.setNb_billets(epreuveDTO.getNbBillets());
+            setNbBillets(epreuveDTO.getIdEpreuve(), epreuveDTO.getNbBillets());
         }
         if (epreuveDTO.getPrix() != null) {
             epreuve.setPrix(epreuveDTO.getPrix());
@@ -210,10 +216,6 @@ public class OrganisateurService {
     public String setNbParticipants(long idEpreuve, int nbParticipant) {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
                 -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));;
-        int tailleMax = epreuve.getInfrastructureSportive().getCapacite();
-        if (nbParticipant > tailleMax) {
-            return "Nombre de participants supérieur à la taille maximum de l'infrastructure.";
-        }
         epreuve.setNb_delegations(nbParticipant);
         epreuveRepository.save(epreuve);
         return "Nombre de participant mis-à-jour.";
@@ -229,7 +231,7 @@ public class OrganisateurService {
     @Transactional
     public String setNbBillets(long idEpreuve, int nbBillets) {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
-                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));;
+                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
         if (epreuve.getInfrastructureSportive().getCapacite() < nbBillets) {
             return "Nombre de billets supérieur à la taille maximum de l'infrastructure.";
         } else {
@@ -294,6 +296,15 @@ public class OrganisateurService {
                 -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + resultatDTO.getIdEpreuve()));
         Participant participant = participantRepository.findByEmail(resultatDTO.getEmailParticipant()).orElseThrow(()
                 -> new EntityNotFoundException("Participant non trouvé avec l'email : " + resultatDTO.getEmailParticipant()));
+
+        // Vérification que le participant et sa délégation participent à l'épreuve
+        boolean participationExist = participeRepository.findByDelegation_IdAndEpreuve_Id(
+                participant.getDelegation().getId(), epreuve.getId()).isPresent();
+
+        if (!participationExist) {
+            throw new IllegalArgumentException("Le participant ou sa délégation ne participe pas à cette épreuve.");
+        }
+
         Resultat resultat = new Resultat();
         resultat.setPoint(resultatDTO.getPoint());
         resultat.setPosition(resultatDTO.getPosition());

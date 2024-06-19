@@ -206,14 +206,12 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          */
 
         controleurService.verifierBillet(1);
-        //organisateurService.supprimerEpreuve("100m sprint");
-        //organisateurService.supprimerDelegation("USA");
 
         ResultatDTO resultat = new ResultatDTO();
         resultat.setPosition(1);
         resultat.setPoint(12);
         resultat.setIdEpreuve(e.getId());
-        resultat.setEmailParticipant("robert@lans.fr");
+        resultat.setEmailParticipant("garcia@christina.fr");
         organisateurService.setResultat(resultat);
 
         System.out.println(organisateurService.getTotalVentes());
