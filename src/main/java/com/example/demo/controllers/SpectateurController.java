@@ -42,6 +42,7 @@ public class SpectateurController {
     public ResponseEntity<String> supprimerCompte(HttpSession session) {
         if (session.getAttribute("email") != null) {
             spectateurService.supprimerCompte(session.getAttribute("email").toString());
+            session.removeAttribute("email");
             return ResponseEntity.ok("Compte bien supprimé.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");

@@ -1,5 +1,7 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +46,7 @@ public class Billet {
      */
     @ManyToOne
     @JoinColumn(name = "spectateur_email")
+    @JsonIgnore
     private Spectateur spectateur;
 
     /**
@@ -51,6 +54,7 @@ public class Billet {
      */
     @ManyToOne
     @JoinColumn(name = "idEpreuve")
+    @JsonIgnore
     private Epreuve epreuve;
 
 }

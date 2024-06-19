@@ -35,9 +35,9 @@ public class ParticipantController {
     }
 
     @PostMapping("/inscrire")
-    public ResponseEntity<String> inscriptionEpreuve(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<String> inscriptionEpreuve(@RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            String response = participantService.inscrireEpreuve(session.getAttribute("email").toString(), id);
+            String response = participantService.inscrireEpreuve(session.getAttribute("email").toString(), idEpreuve);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Une erreur est survenue");

@@ -1,5 +1,6 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +48,7 @@ public class Delegation {
      * La relation est en cascade et les participations orphelines seront supprimées.
      */
     @OneToMany(mappedBy = "delegation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Participe> participes;
 
     /**
@@ -54,5 +56,6 @@ public class Delegation {
      * La relation est en cascade et les participants orphelins seront supprimés.
      */
     @OneToMany(mappedBy = "delegation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Participant> participants;
 }

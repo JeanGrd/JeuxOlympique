@@ -154,11 +154,11 @@ public class OrganisateurService {
     /**
      * Supprime un participant.
      *
-     * @param id l'identifiant du participant à supprimer
+     * @param email l'email du participant à supprimer
      */
     @Transactional
-    public void supprimerParticipant(long id) {
-        Participant participant = participantRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'id : " + id));
+    public void supprimerParticipant(String email) {
+        Participant participant = participantRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
         participantRepository.delete(participant);
     }
 

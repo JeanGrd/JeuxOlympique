@@ -1,5 +1,8 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,6 +56,7 @@ public class Epreuve {
      */
     @ManyToOne
     @JoinColumn(name = "idInfrastructure")
+    @JsonIgnore
     private InfrastructureSportive infrastructureSportive;
 
     /**
@@ -60,6 +64,7 @@ public class Epreuve {
      * La relation est en cascade et les billets orphelins seront supprimés.
      */
     @OneToMany(mappedBy = "epreuve", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Billet> billets;
 
     /**
@@ -67,6 +72,7 @@ public class Epreuve {
      * La relation est en cascade et les résultats orphelins seront supprimés.
      */
     @OneToMany(mappedBy = "epreuve", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Resultat> resultats;
 
     /**
@@ -74,5 +80,6 @@ public class Epreuve {
      * La relation est en cascade et les participations orphelines seront supprimées.
      */
     @OneToMany(mappedBy = "epreuve", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Participe> participes;
 }

@@ -1,6 +1,7 @@
 // Participant.java
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,7 @@ public class Participant {
      */
     @ManyToOne
     @JoinColumn(name = "idDelegation")
+    @JsonIgnore
     private Delegation delegation;
 
     /**
@@ -43,5 +45,6 @@ public class Participant {
      * La relation est en cascade et les résultats orphelins seront supprimés.
      */
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Resultat> resultats;
 }

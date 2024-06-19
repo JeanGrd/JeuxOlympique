@@ -1,6 +1,7 @@
 // Résultat.java
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,7 @@ public class Resultat {
      */
     @ManyToOne
     @JoinColumn(name = "idParticipant")
+    @JsonIgnore
     private Participant participant;
 
     /**
@@ -42,5 +44,6 @@ public class Resultat {
      */
     @ManyToOne
     @JoinColumn(name = "idEpreuve")
+    @JsonIgnore
     private Epreuve epreuve;
 }

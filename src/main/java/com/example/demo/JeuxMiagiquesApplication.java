@@ -133,6 +133,8 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         c.setNom("Charlie");
         c.setEmail("charlie.brown@example.com");
 
+        organisateurService.creerControleur(c);
+
         /*
          *
          * Spectateur part

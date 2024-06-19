@@ -1,6 +1,8 @@
 // Spectateur.java
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -40,5 +42,6 @@ public class Spectateur {
      * La relation est en cascade et les billets orphelins seront supprimés.
      */
     @OneToMany(mappedBy = "spectateur", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Billet> billets;
 }

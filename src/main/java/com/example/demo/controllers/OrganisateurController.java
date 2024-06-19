@@ -66,16 +66,6 @@ public class OrganisateurController {
         }
     }
 
-    @DeleteMapping("/epreuve")
-    public ResponseEntity<String> supprimerEpreuve(@RequestParam long id, HttpSession session) {
-        if (session.getAttribute("email") != null) {
-            organisateurService.supprimerEpreuve(id);
-            return ResponseEntity.ok("Épreuve supprimée.");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
-        }
-    }
-
     @PutMapping("/epreuve")
     public ResponseEntity<String> modifierEpreuve(@RequestBody EpreuveDTO epreuveDTO, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -86,6 +76,15 @@ public class OrganisateurController {
         }
     }
 
+    @DeleteMapping("/epreuve")
+    public ResponseEntity<String> supprimerEpreuve(@RequestParam long id, HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            organisateurService.supprimerEpreuve(id);
+            return ResponseEntity.ok("Épreuve supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
 
     @PostMapping("/participant")
     public ResponseEntity<String> creerParticipant(@RequestBody Participant participant, HttpSession session) {
@@ -98,9 +97,9 @@ public class OrganisateurController {
     }
 
     @DeleteMapping("/participant")
-    public ResponseEntity<String> supprimerParticipant(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<String> supprimerParticipant(@RequestParam String email, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            organisateurService.supprimerParticipant(id);
+            organisateurService.supprimerParticipant(email);
             return ResponseEntity.ok("Participant supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
@@ -121,7 +120,7 @@ public class OrganisateurController {
     public ResponseEntity<String> supprimerControleur(@RequestParam String email, HttpSession session) {
         if (session.getAttribute("email") != null) {
             organisateurService.supprimerControleur(email);
-            return ResponseEntity.ok("Controleur supprimée.");
+            return ResponseEntity.ok("Controleur supprimé.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }

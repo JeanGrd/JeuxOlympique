@@ -1,5 +1,6 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,7 @@ public class Participe {
      */
     @ManyToOne
     @JoinColumn(name = "idEpreuve")
+    @JsonIgnore
     private Epreuve epreuve;
 
     /**
@@ -36,5 +38,6 @@ public class Participe {
      */
     @ManyToOne
     @JoinColumn(name = "idDelegation")
+    @JsonIgnore
     private Delegation delegation;
 }
