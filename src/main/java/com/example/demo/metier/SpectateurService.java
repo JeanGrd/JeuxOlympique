@@ -30,12 +30,8 @@ public class SpectateurService {
     private EpreuveRepository epreuveRepository;
 
     @Transactional
-    public Spectateur inscription(String nom, String prenom, String email) {
-        Spectateur spectateur = new Spectateur();
-        spectateur.setNom(nom);
-        spectateur.setPrenom(prenom);
-        spectateur.setEmail(email);
-        return spectateurRepository.save(spectateur);
+    public void inscription(Spectateur spectateur) {
+        spectateurRepository.save(spectateur);
     }
 
     @Transactional

@@ -33,9 +33,9 @@ public class SpectateurController {
     }
 
     @PostMapping
-    public ResponseEntity<Spectateur> inscrire(@RequestBody Spectateur spectateur) {
-        Spectateur created = spectateurService.inscription(spectateur.getNom(), spectateur.getPrenom(), spectateur.getEmail());
-        return ResponseEntity.ok(created);
+    public ResponseEntity<String> inscrire(@RequestBody Spectateur spectateur) {
+        spectateurService.inscription(spectateur);
+        return ResponseEntity.ok("Spectateur créé");
     }
 
     @DeleteMapping

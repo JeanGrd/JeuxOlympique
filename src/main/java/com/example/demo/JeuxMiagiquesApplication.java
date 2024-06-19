@@ -119,9 +119,25 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          */
 
         // Use case: Il peut s’inscrire sur l’application
-        Spectateur Ana = spectateurService.inscription("Palea", "Ana", "palea@ana.fr");
-        Spectateur Jean = spectateurService.inscription("Guiraud", "Jean", "guiraud@jean.fr");
-        Spectateur Touria = spectateurService.inscription("Sayagh", "Touria", "sayagh@touria.fr");
+
+        Spectateur Ana = new Spectateur();
+        Ana.setPrenom("Ana");
+        Ana.setNom("Palea");
+        Ana.setEmail("palea@ana.fr");
+
+        Spectateur Jean = new Spectateur();
+        Jean.setPrenom("Jean");
+        Jean.setNom("Guiraud");
+        Jean.setEmail("guiraud@jean.fr");
+
+        Spectateur Touria = new Spectateur();
+        Ana.setPrenom("Touria");
+        Ana.setNom("Sayagh");
+        Ana.setEmail("sayagh@touria.fr");
+
+        spectateurService.inscription(Ana);
+        spectateurService.inscription(Jean);
+        spectateurService.inscription(Touria);
 
         // Use case: Consulter le programme des épreuves
         System.out.println(spectateurService.consulterProgramme());
