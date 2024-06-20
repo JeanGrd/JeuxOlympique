@@ -118,14 +118,14 @@ public class OrganisateurService {
             epreuve.setDate(epreuveDTO.getDate());
         }
         if (epreuveDTO.getNbDelegations() != null) {
-            if (epreuve.getInfrastructureSportive().getCapacite() < epreuveDTO.getNbDelegations()) {
-                return "Nombre de billets supérieur à la taille maximum de l'infrastructure.";
-            } else {
                 epreuve.setNb_delegations(epreuveDTO.getNbDelegations());
-            }
         }
         if (epreuveDTO.getNbBillets() != null) {
+        if (epreuve.getInfrastructureSportive().getCapacite() < epreuveDTO.getNbBillets()) {
+            return "Nombre de billets supérieur à la taille maximum de l'infrastructure.";
+        } else {
             setNbBillets(epreuveDTO.getIdEpreuve(), epreuveDTO.getNbBillets());
+        }
         }
         if (epreuveDTO.getPrix() != null) {
             epreuve.setPrix(epreuveDTO.getPrix());
