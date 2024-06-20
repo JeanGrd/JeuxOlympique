@@ -35,4 +35,14 @@ public interface EpreuveRepository extends CrudRepository<Epreuve, Long> {
     @Query("SELECT COUNT(*) FROM Billet b WHERE b.etat = 'Payé'")
     int getTotalVentes();
 
+    /**
+     * Calcule le pourcentage de billets payés par rapport au nombre total de billets disponibles.
+     *
+     * @return le pourcentage de billets payés en {@code Double}.
+     */
+    @Query("SELECT (paid_billets.paid_count * 1.0 / total_billets.total_count) * 100 AS percentage_paid " +
+            "FROM (SELECT COUNT(b.id) AS paid_count FROM Billet b WHERE b.etat = 'Payé') AS paid_billets, " +
+            "(SELECT SUM(e.nb_billets) AS total_count FROM Epreuve e) AS total_billets")
+    Double getPourcentageBilletsVendus();
+
 }

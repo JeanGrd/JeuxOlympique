@@ -408,4 +408,19 @@ public class OrganisateurController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
     }
+
+    /**
+     * Récupère le pourcentage de billets vendus (payés) par rapport au nombre total de billets disponibles.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant le pourcentage de billets payés ou une erreur si non autorisé
+     */
+    @GetMapping("/pourcentage-billets-vendus")
+    public ResponseEntity<String> getPourcentageBilletsVendus(HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            return ResponseEntity.ok(organisateurService.getPourcentageBilletsVendus() + " %");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
 }

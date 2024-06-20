@@ -369,4 +369,12 @@ public class OrganisateurService {
         return delegationRepository.findAll();
     }
 
+    /**
+     * Récupère le pourcentage de billets vendus (payés) par rapport au nombre total de billets disponibles.
+     *
+     * @return le pourcentage de billets vendus
+     */
+    public Double getPourcentageBilletsVendus() {
+        return epreuveRepository.getPourcentageBilletsVendus();
+    }
 }
