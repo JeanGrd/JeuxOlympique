@@ -30,8 +30,10 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
     }
 
     /**
-     * Ce code
-     * @param args
+     * Cette partie permet à la fois d'initialiser la base de données,
+     * mais aussi de tester les fonctions directement depuis les services.
+     *
+     * Note : elle ne couvre pas tous les cas, merci de ne pas se baser sur les fonctions ci-dessous.
      */
     @Override
     public void run(String... args) {
@@ -113,8 +115,6 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         Delegation usa = new Delegation();
         usa.setNom("USA");
 
-        Billet b = new Billet();
-
         // Création d'un participant
         organisateurService.creerDelegation(france);
         organisateurService.creerDelegation(usa);
@@ -129,9 +129,9 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
 
         // Création d'un contrôleur
         Controleur c = new Controleur();
-        c.setPrenom("Brown");
-        c.setNom("Charlie");
-        c.setEmail("charlie.brown@example.com");
+        c.setPrenom("Cédric");
+        c.setNom("Teyssié");
+        c.setEmail("cédri@teyssié.fr");
 
         organisateurService.creerControleur(c);
 
@@ -163,7 +163,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         spectateurService.inscription(Touria);
 
         // Use case: Consulter le programme des épreuves
-        System.out.println(spectateurService.consulterProgramme());
+        System.out.println("Programme : " + spectateurService.consulterProgramme());
 
         // Use case: Supprimer son compte
         spectateurService.supprimerCompte(Ana.getEmail());
@@ -185,7 +185,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          */
 
         // Use case: Consulter les épreuves disponibles
-        System.out.println(participantService.consulterProgramme());
+        System.out.println("Liste des épreuves : " + participantService.consulterProgramme());
 
         // Use case: S'inscrire à des épreuves au nom de sa délégation
         participantService.inscrireEpreuve(Roger.getEmail(), e.getId());
@@ -194,10 +194,10 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         participantService.desengagerEpreuve(Roger.getEmail(), e.getId());
 
         // Use case: consulter ses résultats
-        System.out.println(participantService.consulterResultatsParticipant(Roger.getEmail()));
+        System.out.println("Résultat du participant Roger : " + participantService.consulterResultatsParticipant(Roger.getEmail()));
 
         // Use case: classement de sa délégation
-        System.out.println(participantService.consulterResultatsParDelegation(Roger.getEmail()));
+        System.out.println("Résultat de la délégation de Roger : " + participantService.consulterResultatsParDelegation(Roger.getEmail()));
 
         /*
          *
@@ -207,6 +207,12 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
 
         controleurService.verifierBillet(1);
 
+        /*
+         *
+         * Organisateur part 2
+         *
+         */
+
         ResultatDTO resultat = new ResultatDTO();
         resultat.setPosition(1);
         resultat.setPoint(12);
@@ -214,9 +220,11 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         resultat.setEmailParticipant("garcia@christina.fr");
         organisateurService.setResultat(resultat);
 
-        System.out.println(organisateurService.getTotalVentes());
-        System.out.println(organisateurService.getTotalPlacesDisponibles());
-        System.out.println(organisateurService.getChiffreAffaires());
+        System.out.println("Total des ventes : " + organisateurService.getTotalVentes());
+        System.out.println("Total des places disponibles : " + organisateurService.getTotalPlacesDisponibles());
+        System.out.println("Chiffre d'affaires : " + organisateurService.getChiffreAffaires());
+
+        System.err.println("Server is running!");
 
     }
 }
