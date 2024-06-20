@@ -51,13 +51,13 @@ This project is an application for managing the Olympic Games, developed as part
 
 ## Conclusion
 
-The Olympic Games application offers a comprehensive solution for managing and administering various aspects of a large-scale sports event. Leveraging the power of Spring Boot and Spring Data JPA, the API ensures efficient and scalable operations.
+Developed as part of a university project, it leverages the power of Spring Boot and Spring Data JPA to ensure efficient and scalable operations. Through this project, we have gained valuable insights and hands-on experience in building robust backend systems.
 
 ## Credit
 
-Developed by:
+Written by:
 - Ana PALEA
 - Touria SAYAGH
 - Jean GUIRAUD
 
-Thank you for using the MIAGIC Games API. We hope it meets all your event management needs.
+Year of project completion : 2024
