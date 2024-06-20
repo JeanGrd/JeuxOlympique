@@ -17,13 +17,15 @@ import java.util.Optional;
 public interface BilletRepository extends CrudRepository<Billet, Long> {
 
     /**
-     * Compte le nombre de billets pour un spectateur et une épreuve donnés.
+     * Compte le nombre de billets pour un spectateur et une épreuve donnés, excluant les billets annulés.
      *
      * @param spectateur le spectateur
      * @param epreuve    l'épreuve
-     * @return le nombre de billets
+     * @return le nombre de billets payés ou réservés
      */
+    @Query("SELECT COUNT(b) FROM Billet b WHERE b.spectateur = :spectateur AND b.epreuve = :epreuve AND b.etat IN ('Payé', 'Réservé')")
     int countAllBySpectateurAndEpreuve(Spectateur spectateur, Epreuve epreuve);
+
 
     /**
      * Recherche un billet par son identifiant et l'email du spectateur.
