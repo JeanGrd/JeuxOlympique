@@ -85,8 +85,8 @@ public class SpectateurService {
      * @return une liste de billets associés à l'email du spectateur
      */
     public List<Billet> listerBillets(String email) {
-        Iterable<Billet> epreuves = billetRepository.findAllBySpectateur_Email(email);
-        return StreamSupport.stream(epreuves.spliterator(), false)
+        Iterable<Billet> billets = billetRepository.findAllBySpectateur_Email(email);
+        return StreamSupport.stream(billets.spliterator(), false)
                 .collect(Collectors.toList());
     }
 
