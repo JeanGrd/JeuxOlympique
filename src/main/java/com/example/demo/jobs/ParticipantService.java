@@ -72,9 +72,6 @@ public class ParticipantService {
                     participes.setDelegation(delegation);
                     participes.setEtat("Participe");
 
-                    participes.setDelegation(delegation);
-                    participes.setEpreuve(epreuve);
-
                     participeRepository.save(participes);
 
                 } else {
