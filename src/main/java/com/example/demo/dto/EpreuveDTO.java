@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import com.example.demo.entities.Epreuve;
 import lombok.Getter;
 import lombok.Setter;
 

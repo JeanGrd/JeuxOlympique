@@ -53,14 +53,14 @@ public class ControleurController {
     /**
      * Vérifie la validité d'un billet.
      *
-     * @param id      l'identifiant du billet
-     * @param session la session HTTP
+     * @param idBillet l'identifiant du billet
+     * @param session  la session HTTP
      * @return une réponse HTTP indiquant si le billet est valide ou non, ou une erreur si non autorisé
      */
     @PostMapping("/verifier-billet")
-    public ResponseEntity<String> verifierBillet(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<String> verifierBillet(@RequestParam long idBillet, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            boolean valide = controleurService.verifierBillet(id);
+            boolean valide = controleurService.verifierBillet(idBillet);
             if (valide) {
                 return ResponseEntity.ok("Billet valide.");
             } else {

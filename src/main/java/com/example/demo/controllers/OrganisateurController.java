@@ -2,7 +2,10 @@ package com.example.demo.controllers;
 
 import com.example.demo.dto.EpreuveDTO;
 import com.example.demo.dto.ResultatDTO;
-import com.example.demo.entities.*;
+import com.example.demo.entities.Controleur;
+import com.example.demo.entities.Delegation;
+import com.example.demo.entities.InfrastructureSportive;
+import com.example.demo.entities.Participant;
 import com.example.demo.jobs.OrganisateurService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,14 +75,14 @@ public class OrganisateurController {
     /**
      * Supprime une délégation par son identifiant.
      *
-     * @param id      l'identifiant de la délégation
-     * @param session la session HTTP
+     * @param idDelegation l'identifiant de la délégation
+     * @param session      la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de la suppression de la délégation
      */
     @DeleteMapping("/delegation")
-    public ResponseEntity<String> supprimerDelegation(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<String> supprimerDelegation(@RequestParam long idDelegation, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            organisateurService.supprimerDelegation(id);
+            organisateurService.supprimerDelegation(idDelegation);
             return ResponseEntity.ok("Délégation supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
@@ -123,14 +126,14 @@ public class OrganisateurController {
     /**
      * Supprime une épreuve par son identifiant.
      *
-     * @param id      l'identifiant de l'épreuve
-     * @param session la session HTTP
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @param session   la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de la suppression de l'épreuve
      */
     @DeleteMapping("/epreuve")
-    public ResponseEntity<String> supprimerEpreuve(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<String> supprimerEpreuve(@RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            organisateurService.supprimerEpreuve(id);
+            organisateurService.supprimerEpreuve(idEpreuve);
             return ResponseEntity.ok("Épreuve supprimée.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
@@ -209,7 +212,7 @@ public class OrganisateurController {
      * Crée une nouvelle infrastructure sportive.
      *
      * @param infrastructureSportive le contrôleur à créer
-     * @param session    la session HTTP
+     * @param session                la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de la création.
      */
     @PostMapping("/infrastructure")
@@ -225,8 +228,8 @@ public class OrganisateurController {
     /**
      * Supprime une infrastructure sportive par son id.
      *
-     * @param idInfrastructure   l'id de l'infrastructure sportive
-     * @param session la session HTTP
+     * @param idInfrastructure l'id de l'infrastructure sportive
+     * @param session          la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de la suppression.
      */
     @DeleteMapping("/infrastructure")

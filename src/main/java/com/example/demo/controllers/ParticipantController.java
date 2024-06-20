@@ -53,14 +53,14 @@ public class ParticipantController {
     /**
      * Inscrit un participant à une épreuve.
      *
-     * @param id l'identifiant de l'épreuve
+     * @param idEpreuve l'identifiant de l'épreuve
      * @param session   la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de l'inscription
      */
     @PostMapping("/inscrire")
-    public ResponseEntity<String> inscriptionEpreuve(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<String> inscriptionEpreuve(@RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            String response = participantService.inscrireEpreuve(session.getAttribute("email").toString(), id);
+            String response = participantService.inscrireEpreuve(session.getAttribute("email").toString(), idEpreuve);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Une erreur est survenue");
@@ -70,14 +70,14 @@ public class ParticipantController {
     /**
      * Désengage un participant d'une épreuve.
      *
-     * @param id      l'identifiant de l'épreuve
-     * @param session la session HTTP
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @param session   la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec du désengagement
      */
     @PostMapping("/desengager")
-    public ResponseEntity<String> desengagerEpreuve(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<String> desengagerEpreuve(@RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            String response = participantService.desengagerEpreuve(session.getAttribute("email").toString(), id);
+            String response = participantService.desengagerEpreuve(session.getAttribute("email").toString(), idEpreuve);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Une erreur est survenue");

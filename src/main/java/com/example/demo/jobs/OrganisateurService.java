@@ -164,7 +164,8 @@ public class OrganisateurService {
      */
     @Transactional
     public void supprimerParticipant(String email) {
-        Participant participant = participantRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
+        Participant participant = participantRepository.findByEmail(email).orElseThrow(()
+                -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
         participantRepository.delete(participant);
     }
 
@@ -215,7 +216,7 @@ public class OrganisateurService {
     @Transactional
     public String setNbParticipants(long idEpreuve, int nbParticipant) {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
-                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));;
+                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
         epreuve.setNb_delegations(nbParticipant);
         epreuveRepository.save(epreuve);
         return "Nombre de participant mis-à-jour.";

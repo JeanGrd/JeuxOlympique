@@ -1,6 +1,7 @@
 package com.example.demo.jobs;
 
-import com.example.demo.dao.*;
+import com.example.demo.dao.InfrastructureSportiveRepository;
+import com.example.demo.dao.OrganisateurRepository;
 import com.example.demo.entities.InfrastructureSportive;
 import com.example.demo.entities.Organisateur;
 import jakarta.transaction.Transactional;

@@ -21,7 +21,7 @@ public class SpectateurController {
     /**
      * Connecte un spectateur en vérifiant son email.
      *
-     * @param email l'email du spectateur
+     * @param email   l'email du spectateur
      * @param session la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de la connexion
      */
@@ -110,14 +110,14 @@ public class SpectateurController {
     /**
      * Réserve un billet pour une épreuve.
      *
-     * @param id l'identifiant de l'épreuve
-     * @param session la session HTTP
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @param session   la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de la réservation
      */
     @PostMapping("/billet")
-    public ResponseEntity<?> reserverBillet(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<?> reserverBillet(@RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(spectateurService.reserverBillet(id, session.getAttribute("email").toString()));
+            return ResponseEntity.ok(spectateurService.reserverBillet(idEpreuve, session.getAttribute("email").toString()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
@@ -126,14 +126,14 @@ public class SpectateurController {
     /**
      * Paie un billet réservé.
      *
-     * @param id l'identifiant du billet
-     * @param session la session HTTP
+     * @param idBillet l'identifiant du billet
+     * @param session  la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec du paiement
      */
     @PostMapping("/billet/payer")
-    public ResponseEntity<?> payerBillet(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<?> payerBillet(@RequestParam long idBillet, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(spectateurService.payerBillet(id, session.getAttribute("email").toString() ));
+            return ResponseEntity.ok(spectateurService.payerBillet(idBillet, session.getAttribute("email").toString()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
@@ -142,14 +142,14 @@ public class SpectateurController {
     /**
      * Annule une réservation de billet.
      *
-     * @param id l'identifiant du billet
-     * @param session la session HTTP
+     * @param idBillet l'identifiant du billet
+     * @param session  la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de l'annulation
      */
     @PostMapping("/billet/annuler")
-    public ResponseEntity<?> annulerReservation(@RequestParam long id, HttpSession session) {
+    public ResponseEntity<?> annulerReservation(@RequestParam long idBillet, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(spectateurService.annulerReservation(id, session.getAttribute("email").toString()));
+            return ResponseEntity.ok(spectateurService.annulerReservation(idBillet, session.getAttribute("email").toString()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
