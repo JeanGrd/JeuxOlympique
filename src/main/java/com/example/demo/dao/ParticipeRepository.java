@@ -21,4 +21,12 @@ public interface ParticipeRepository extends CrudRepository<Participe, Long> {
      */
     Optional<Participe> findByDelegation_IdAndEpreuve_Id(long delegationId, long epreuveId);
 
+    /**
+     * Compte le nombre de billets pour une épreuve donnée.
+     *
+     * @param idEpreuve l'identifiant de l'épreuve.
+     * @return le nombre de billets pour l'épreuve spécifiée.
+     */
+    int countByEpreuve_Id(long idEpreuve);
+
 }

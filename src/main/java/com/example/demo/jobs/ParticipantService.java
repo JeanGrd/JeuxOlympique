@@ -57,6 +57,8 @@ public class ParticipantService {
         Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
                 -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
 
+        int nbTotalDejaInscrit = participeRepository.countByEpreuve_Id(idEpreuve);
+
         Delegation delegation = participant.getDelegation();
 
         if (delegation == null) {
@@ -69,7 +71,7 @@ public class ParticipantService {
         LocalDate now = LocalDate.now();
         LocalDate dateEpreuve = epreuve.getDate();
         if (ChronoUnit.DAYS.between(now, dateEpreuve) > 10) {
-            if (epreuve.getNb_delegations() >= epreuve.getNb_delegations()) {
+            if (epreuve.getNb_delegations() < nbTotalDejaInscrit) {
                 if (!alreadyExists) {
                     Participe participes = new Participe();
                     participes.setEpreuve(epreuve);
@@ -81,6 +83,8 @@ public class ParticipantService {
                 } else {
                     return "La délégation est déjà inscrite à cette épreuve.";
                 }
+            } else {
+                return "Nombre total de délégations déjà dépassé pour l'épreuve.";
             }
         } else {
             return "inscription est fermée 10 jours avant la date de l'épreuve.";
