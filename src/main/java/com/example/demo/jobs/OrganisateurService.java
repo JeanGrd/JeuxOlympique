@@ -101,7 +101,7 @@ public class OrganisateurService {
      * @param epreuveDTO les nouvelles informations de l'épreuve
      */
     @Transactional
-    public void modifierEpreuve(EpreuveDTO epreuveDTO) {
+    public String modifierEpreuve(EpreuveDTO epreuveDTO) {
         Epreuve epreuve = epreuveRepository.findById(epreuveDTO.getIdEpreuve())
                 .orElseThrow(() -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + epreuveDTO.getIdEpreuve()));
 
@@ -119,7 +119,7 @@ public class OrganisateurService {
         }
         if (epreuveDTO.getNbDelegations() != null) {
             if (epreuve.getInfrastructureSportive().getCapacite() < epreuveDTO.getNbDelegations()) {
-                throw new IllegalArgumentException("Nombre de billets supérieur à la taille maximum de l'infrastructure.");
+                return "Nombre de billets supérieur à la taille maximum de l'infrastructure.";
             } else {
                 epreuve.setNb_delegations(epreuveDTO.getNbDelegations());
             }
@@ -132,6 +132,7 @@ public class OrganisateurService {
         }
 
         epreuveRepository.save(epreuve);
+        return "Epreuve modifiée.";
     }
 
     /**

@@ -116,8 +116,8 @@ public class OrganisateurController {
     @PutMapping("/epreuve")
     public ResponseEntity<String> modifierEpreuve(@RequestBody EpreuveDTO epreuveDTO, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            organisateurService.modifierEpreuve(epreuveDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Epreuve modifiée.");
+            String response = organisateurService.modifierEpreuve(epreuveDTO);
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }
