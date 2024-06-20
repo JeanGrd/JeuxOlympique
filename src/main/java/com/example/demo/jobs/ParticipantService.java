@@ -161,8 +161,8 @@ public class ParticipantService {
      *
      * @return une liste d'épreuves
      */
-    public List<Epreuve> consulterProgramme() {
-        Iterable<Epreuve> epreuves = epreuveRepository.findAll();
+    public List<Epreuve> consulterEpreuveDisponible() {
+        Iterable<Epreuve> epreuves = epreuveRepository.getEpreuveDisponible();
         return StreamSupport.stream(epreuves.spliterator(), false)
                 .collect(Collectors.toList());
     }

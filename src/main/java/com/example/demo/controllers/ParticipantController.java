@@ -125,7 +125,7 @@ public class ParticipantController {
     @GetMapping("/programme")
     public ResponseEntity<?> consulterProgramme(HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(participantService.consulterProgramme());
+            return ResponseEntity.ok(participantService.consulterEpreuveDisponible());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }

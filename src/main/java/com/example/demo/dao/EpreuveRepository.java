@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository pour gérer les opérations CRUD pour l'entité Epreuve.
  */
@@ -45,4 +47,6 @@ public interface EpreuveRepository extends CrudRepository<Epreuve, Long> {
             "(SELECT SUM(e.nb_billets) AS total_count FROM Epreuve e) AS total_billets")
     Double getPourcentageBilletsVendus();
 
-}
+
+    @Query("SELECT e FROM Epreuve e WHERE e.nb_delegations > (SELECT COUNT(p) FROM Participe p WHERE p.epreuve = e)")
+    List<Epreuve> getEpreuveDisponible();}
