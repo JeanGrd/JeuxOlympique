@@ -35,11 +35,11 @@ public class ControleurService {
     /**
      * Vérifie la validité d'un billet.
      *
-     * @param billetId l'identifiant du billet à vérifier
+     * @param idBillet l'identifiant du billet à vérifier
      * @return true si le billet est payé, false sinon
      */
-    public boolean verifierBillet(long billetId) {
-        Optional<Billet> billet = billetRepository.findById(billetId);
+    public boolean verifierBillet(long idBillet) {
+        Optional<Billet> billet = billetRepository.findById(idBillet);
         return billet.map(b -> "Payé".equals(b.getEtat())).orElse(false);
     }
 }

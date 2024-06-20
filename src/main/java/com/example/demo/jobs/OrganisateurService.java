@@ -96,19 +96,6 @@ public class OrganisateurService {
     }
 
     /**
-     * Supprime une épreuve.
-     *
-     * @param idEpreuve l'identifiant de l'épreuve à supprimer
-     */
-    @Transactional
-    public void supprimerEpreuve(long idEpreuve) {
-        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
-                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
-
-        epreuveRepository.delete(epreuve);
-    }
-
-    /**
      * Modifie les informations d'une épreuve.
      *
      * @param epreuveDTO les nouvelles informations de l'épreuve
@@ -145,6 +132,19 @@ public class OrganisateurService {
         }
 
         epreuveRepository.save(epreuve);
+    }
+
+    /**
+     * Supprime une épreuve.
+     *
+     * @param idEpreuve l'identifiant de l'épreuve à supprimer
+     */
+    @Transactional
+    public void supprimerEpreuve(long idEpreuve) {
+        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
+                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
+
+        epreuveRepository.delete(epreuve);
     }
 
     /**
@@ -191,6 +191,28 @@ public class OrganisateurService {
         Controleur controleur = controleurRepository.findByEmail(email).orElseThrow(()
                 -> new EntityNotFoundException("Contrôleur non trouvé avec l'email : " + email));
         controleurRepository.delete(controleur);
+    }
+
+    /**
+     * Crée une nouvelle infrastructure sportive.
+     *
+     * @param infrastructureSportive l'infrastructure sportive à créer
+     */
+    @Transactional
+    public void creerInfrastructureSportive(InfrastructureSportive infrastructureSportive) {
+        infrastructureSportiveRepository.save(infrastructureSportive);
+    }
+
+    /**
+     * Supprime une infrastructure sportive par son identifiant.
+     *
+     * @param idInfrastructure l'identifiant de l'infrastructure à supprimer
+     */
+    @Transactional
+    public void supprimerInfrastructure(long idInfrastructure) {
+        InfrastructureSportive infrastructureSportive = infrastructureSportiveRepository.findById(idInfrastructure).orElseThrow(()
+                -> new EntityNotFoundException("Infrastructure non trouvée avec l'id : " + idInfrastructure));
+        infrastructureSportiveRepository.delete(infrastructureSportive);
     }
 
     /**
@@ -241,34 +263,6 @@ public class OrganisateurService {
         }
         epreuveRepository.save(epreuve);
         return "Nombre de billets mis-à-jour.";
-    }
-
-    /**
-     * Récupère le nombre total de places disponibles.
-     *
-     * @return le nombre total de places disponibles
-     */
-    public int getTotalPlacesDisponibles() {
-        return epreuveRepository.getTotalPlacesDisponibles();
-    }
-
-    /**
-     * Récupère le chiffre d'affaires total.
-     *
-     * @return le chiffre d'affaires total
-     */
-    public double getChiffreAffaires() {
-        Double chiffreAffaires = epreuveRepository.getChiffreAffaires();
-        return chiffreAffaires != null ? chiffreAffaires : 0.0;
-    }
-
-    /**
-     * Récupère le nombre total de ventes.
-     *
-     * @return le nombre total de ventes
-     */
-    public int getTotalVentes() {
-        return epreuveRepository.getTotalVentes();
     }
 
     /**
@@ -330,25 +324,40 @@ public class OrganisateurService {
     }
 
     /**
-     * Crée une nouvelle infrastructure sportive.
+     * Récupère le nombre total de places disponibles.
      *
-     * @param infrastructureSportive l'infrastructure sportive à créer
+     * @return le nombre total de places disponibles
      */
-    @Transactional
-    public void creerInfrastructureSportive(InfrastructureSportive infrastructureSportive) {
-        infrastructureSportiveRepository.save(infrastructureSportive);
+    public int getTotalPlacesDisponibles() {
+        return epreuveRepository.getTotalPlacesDisponibles();
     }
 
     /**
-     * Supprime une infrastructure sportive par son identifiant.
+     * Récupère le chiffre d'affaires total.
      *
-     * @param idInfrastructure l'identifiant de l'infrastructure à supprimer
+     * @return le chiffre d'affaires total
      */
-    @Transactional
-    public void supprimerInfrastructure(long idInfrastructure) {
-        InfrastructureSportive infrastructureSportive = infrastructureSportiveRepository.findById(idInfrastructure).orElseThrow(()
-                -> new EntityNotFoundException("Infrastructure non trouvée avec l'id : " + idInfrastructure));
-        infrastructureSportiveRepository.delete(infrastructureSportive);
+    public double getChiffreAffaires() {
+        Double chiffreAffaires = epreuveRepository.getChiffreAffaires();
+        return chiffreAffaires != null ? chiffreAffaires : 0.0;
+    }
+
+    /**
+     * Récupère le nombre total de ventes.
+     *
+     * @return le nombre total de ventes
+     */
+    public int getTotalVentes() {
+        return epreuveRepository.getTotalVentes();
+    }
+
+    /**
+     * Récupère le pourcentage de billets vendus (payés) par rapport au nombre total de billets disponibles.
+     *
+     * @return le pourcentage de billets vendus
+     */
+    public Double getPourcentageBilletsVendus() {
+        return epreuveRepository.getPourcentageBilletsVendus();
     }
 
     /**
@@ -369,12 +378,4 @@ public class OrganisateurService {
         return delegationRepository.findAll();
     }
 
-    /**
-     * Récupère le pourcentage de billets vendus (payés) par rapport au nombre total de billets disponibles.
-     *
-     * @return le pourcentage de billets vendus
-     */
-    public Double getPourcentageBilletsVendus() {
-        return epreuveRepository.getPourcentageBilletsVendus();
-    }
 }
