@@ -185,7 +185,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
          */
 
         // Use case: Consulter les épreuves disponibles
-        System.out.println("Liste des épreuves : " + participantService.consulterProgramme());
+        System.out.println("Liste des épreuves : " + participantService.consulterEpreuveDisponible());
 
         // Use case: S'inscrire à des épreuves au nom de sa délégation
         participantService.inscrireEpreuve(Roger.getEmail(), e.getId());
