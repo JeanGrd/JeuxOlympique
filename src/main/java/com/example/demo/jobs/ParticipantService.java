@@ -51,9 +51,11 @@ public class ParticipantService {
      */
     @Transactional
     public String inscrireEpreuve(String email, long epreuveId) {
-        Participant participant = participantRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
+        Participant participant = participantRepository.findByEmail(email).orElseThrow(()
+                -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
         ;
-        Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow();
+        Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow(()
+                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + epreuveId));
 
         Delegation delegation = participant.getDelegation();
 
