@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Contrôleur REST pour gérer les opérations liées aux participants.
+ */
 @RestController
 @RequestMapping("/api/participants")
 public class ParticipantController {
@@ -17,6 +20,13 @@ public class ParticipantController {
     @Autowired
     private ParticipantService participantService;
 
+    /**
+     * Connecte un participant en vérifiant son email.
+     *
+     * @param email   l'email du participant
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la connexion
+     */
     @PostMapping("/connexion")
     public ResponseEntity<String> connecterParticipant(@RequestParam String email, HttpSession session) {
         boolean existe = participantService.verifierEmailExist(email);
@@ -28,12 +38,25 @@ public class ParticipantController {
         }
     }
 
+    /**
+     * Déconnecte un participant en supprimant son email de la session.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès de la déconnexion
+     */
     @PostMapping("/deconnexion")
     public ResponseEntity<String> deconnecterParticipant(HttpSession session) {
         session.removeAttribute("email");
         return ResponseEntity.ok("Déconnexion réussie.");
     }
 
+    /**
+     * Inscrit un participant à une épreuve.
+     *
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @param session   la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de l'inscription
+     */
     @PostMapping("/inscrire")
     public ResponseEntity<String> inscriptionEpreuve(@RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -44,6 +67,13 @@ public class ParticipantController {
         }
     }
 
+    /**
+     * Désengage un participant d'une épreuve.
+     *
+     * @param id      l'identifiant de l'épreuve
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec du désengagement
+     */
     @PostMapping("/desengager")
     public ResponseEntity<String> desengagerEpreuve(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -54,6 +84,12 @@ public class ParticipantController {
         }
     }
 
+    /**
+     * Consulte les résultats d'un participant.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant la liste des résultats ou une erreur si non autorisé
+     */
     @GetMapping("/resultats")
     public ResponseEntity<List<Resultat>> consulterResultatsParticipant(HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -64,6 +100,12 @@ public class ParticipantController {
         }
     }
 
+    /**
+     * Consulte les résultats de la délégation d'un participant.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant la liste des résultats de la délégation ou une erreur si non autorisé
+     */
     @GetMapping("/resultats/delegation")
     public ResponseEntity<List<Resultat>> consulterResultatsDelegation(HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -74,6 +116,12 @@ public class ParticipantController {
         }
     }
 
+    /**
+     * Consulte le programme des épreuves.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant le programme des épreuves ou une erreur si non autorisé
+     */
     @GetMapping("/programme")
     public ResponseEntity<?> consulterProgramme(HttpSession session) {
         if (session.getAttribute("email") != null) {

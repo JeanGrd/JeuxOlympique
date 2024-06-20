@@ -6,9 +6,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository pour gérer les opérations CRUD pour l'entité Participe.
+ */
 @Repository
 public interface ParticipeRepository extends CrudRepository<Participe, Long> {
 
+    /**
+     * Recherche une participation par l'identifiant de la délégation et l'identifiant de l'épreuve.
+     *
+     * @param delegationId l'identifiant de la délégation
+     * @param epreuveId    l'identifiant de l'épreuve
+     * @return un Optional contenant la participation si elle est trouvée, ou vide sinon
+     */
     Optional<Participe> findByDelegation_IdAndEpreuve_Id(long delegationId, long epreuveId);
 
 }

@@ -79,6 +79,18 @@ public class SpectateurService {
     }
 
     /**
+     * Liste tous les billets d'un spectateur en fonction de son email.
+     *
+     * @param email l'email du spectateur dont les billets doivent être listés
+     * @return une liste de billets associés à l'email du spectateur
+     */
+    public List<Billet> listerBillets(String email) {
+        Iterable<Billet> epreuves = billetRepository.findAllBySpectateur_Email(email);
+        return StreamSupport.stream(epreuves.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Réserve un billet pour une épreuve spécifique pour un spectateur donné.
      *
      * @param idEpreuve l'identifiant de l'épreuve

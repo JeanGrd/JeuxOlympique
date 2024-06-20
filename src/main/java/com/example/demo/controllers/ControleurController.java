@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Contrôleur REST pour gérer les opérations liées aux contrôleurs.
+ */
 @RestController
 @RequestMapping("/api/controleurs")
 public class ControleurController {
@@ -17,6 +20,13 @@ public class ControleurController {
     @Autowired
     private ControleurService controleurService;
 
+    /**
+     * Connecte un contrôleur en vérifiant son email.
+     *
+     * @param email   l'email du contrôleur
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la connexion
+     */
     @PostMapping("/connexion")
     public ResponseEntity<String> connecterControleur(@RequestParam String email, HttpSession session) {
         boolean existe = controleurService.verifierEmailExist(email);
@@ -28,12 +38,25 @@ public class ControleurController {
         }
     }
 
+    /**
+     * Déconnecte un contrôleur en supprimant son email de la session.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès de la déconnexion
+     */
     @PostMapping("/deconnexion")
     public ResponseEntity<String> deconnecterControleur(HttpSession session) {
         session.removeAttribute("email");
         return ResponseEntity.ok("Déconnexion réussie.");
     }
 
+    /**
+     * Vérifie la validité d'un billet.
+     *
+     * @param id      l'identifiant du billet
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant si le billet est valide ou non, ou une erreur si non autorisé
+     */
     @PostMapping("/verifier-billet")
     public ResponseEntity<String> verifierBillet(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("email") != null) {

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
+/**
+ * Contrôleur REST pour gérer les opérations liées aux organisateurs.
+ */
 @RestController
 @RequestMapping("/api/organisateurs")
 public class OrganisateurController {
@@ -19,6 +22,13 @@ public class OrganisateurController {
     @Autowired
     private OrganisateurService organisateurService;
 
+    /**
+     * Connecte un organisateur en vérifiant son email.
+     *
+     * @param email   l'email de l'organisateur
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la connexion
+     */
     @PostMapping("/connexion")
     public ResponseEntity<String> connecterOrganisateur(@RequestParam String email, HttpSession session) {
         boolean existe = organisateurService.verifierEmailExist(email);
@@ -30,12 +40,25 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Déconnecte un organisateur en supprimant son email de la session.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès de la déconnexion
+     */
     @PostMapping("/deconnexion")
     public ResponseEntity<String> deconnecterOrganisateur(HttpSession session) {
         session.removeAttribute("email");
         return ResponseEntity.ok("Déconnexion réussie.");
     }
 
+    /**
+     * Crée une nouvelle délégation.
+     *
+     * @param delegation la délégation à créer
+     * @param session    la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la création de la délégation
+     */
     @PostMapping("/delegation")
     public ResponseEntity<String> creerDelegation(@RequestBody Delegation delegation, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -46,6 +69,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Supprime une délégation par son identifiant.
+     *
+     * @param id      l'identifiant de la délégation
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la suppression de la délégation
+     */
     @DeleteMapping("/delegation")
     public ResponseEntity<String> supprimerDelegation(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -56,6 +86,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Crée une nouvelle épreuve.
+     *
+     * @param epreuveDTO les détails de l'épreuve à créer
+     * @param session    la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la création de l'épreuve
+     */
     @PostMapping("/epreuve")
     public ResponseEntity<String> creerEpreuve(@RequestBody EpreuveDTO epreuveDTO, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -66,6 +103,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Modifie une épreuve existante.
+     *
+     * @param epreuveDTO les détails de l'épreuve à modifier
+     * @param session    la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la modification de l'épreuve
+     */
     @PutMapping("/epreuve")
     public ResponseEntity<String> modifierEpreuve(@RequestBody EpreuveDTO epreuveDTO, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -76,6 +120,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Supprime une épreuve par son identifiant.
+     *
+     * @param id      l'identifiant de l'épreuve
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la suppression de l'épreuve
+     */
     @DeleteMapping("/epreuve")
     public ResponseEntity<String> supprimerEpreuve(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -86,6 +137,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Crée un nouveau participant.
+     *
+     * @param participant le participant à créer
+     * @param session     la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la création du participant
+     */
     @PostMapping("/participant")
     public ResponseEntity<String> creerParticipant(@RequestBody Participant participant, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -96,6 +154,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Supprime un participant par son email.
+     *
+     * @param email   l'email du participant
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la suppression du participant
+     */
     @DeleteMapping("/participant")
     public ResponseEntity<String> supprimerParticipant(@RequestParam String email, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -106,6 +171,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Crée un nouveau contrôleur.
+     *
+     * @param controleur le contrôleur à créer
+     * @param session    la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la création du contrôleur
+     */
     @PostMapping("/controleur")
     public ResponseEntity<String> creerControleur(@RequestBody Controleur controleur, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -116,6 +188,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Supprime un contrôleur par son email.
+     *
+     * @param email   l'email du contrôleur
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la suppression du contrôleur
+     */
     @DeleteMapping("/controleur")
     public ResponseEntity<String> supprimerControleur(@RequestParam String email, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -126,6 +205,14 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Met à jour la date d'une épreuve.
+     *
+     * @param date      la nouvelle date de l'épreuve
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @param session   la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la mise à jour de la date
+     */
     @PostMapping("/epreuve/date")
     public ResponseEntity<String> setDate(@RequestParam LocalDate date, @RequestParam long idEpreuve, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -136,6 +223,14 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Met à jour le nombre de participants pour une épreuve.
+     *
+     * @param idEpreuve     l'identifiant de l'épreuve
+     * @param nbParticipant le nouveau nombre de participants
+     * @param session       la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la mise à jour du nombre de participants
+     */
     @PostMapping("/epreuve/nbparticipants")
     public ResponseEntity<String> setNbParticipants(@RequestParam long idEpreuve, @RequestParam int nbParticipant, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -146,6 +241,14 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Met à jour le nombre de billets pour une épreuve.
+     *
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @param nbBillets le nouveau nombre de billets
+     * @param session   la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la mise à jour du nombre de billets
+     */
     @PostMapping("/epreuve/nbbillets")
     public ResponseEntity<String> setNbBillets(@RequestParam long idEpreuve, @RequestParam int nbBillets, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -156,6 +259,14 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Associe un participant à une délégation.
+     *
+     * @param emailParticipant l'email du participant
+     * @param idDelegation     l'identifiant de la délégation
+     * @param session          la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la mise en relation
+     */
     @PostMapping("/participant/delegation")
     public ResponseEntity<String> setDelegation(@RequestParam String emailParticipant, @RequestParam long idDelegation, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -166,6 +277,13 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Met à jour le résultat d'une épreuve pour un participant.
+     *
+     * @param resultatDTO les détails du résultat à mettre à jour
+     * @param session     la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la mise à jour du résultat
+     */
     @PostMapping("/epreuve/resultat")
     public ResponseEntity<String> setResultat(@RequestBody ResultatDTO resultatDTO, HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -176,6 +294,12 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Récupère le nombre total de places disponibles pour les épreuves.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant le nombre total de places disponibles ou une erreur si non autorisé
+     */
     @GetMapping("/places-disponibles")
     public ResponseEntity<String> getTotalPlacesDisponibles(HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -186,6 +310,12 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Récupère le chiffre d'affaires total des billets payés.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant le chiffre d'affaires ou une erreur si non autorisé
+     */
     @GetMapping("/chiffre-affaires")
     public ResponseEntity<String> getChiffreAffaires(HttpSession session) {
         if (session.getAttribute("email") != null) {
@@ -196,6 +326,12 @@ public class OrganisateurController {
         }
     }
 
+    /**
+     * Récupère le nombre total de ventes de billets.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant le nombre total de ventes ou une erreur si non autorisé
+     */
     @GetMapping("/total-ventes")
     public ResponseEntity<String> getTotalVentes(HttpSession session) {
         if (session.getAttribute("email") != null) {
