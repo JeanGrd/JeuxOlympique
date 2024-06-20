@@ -110,14 +110,14 @@ public class SpectateurController {
     /**
      * Réserve un billet pour une épreuve.
      *
-     * @param idEpreuve l'identifiant de l'épreuve
+     * @param id l'identifiant de l'épreuve
      * @param session la session HTTP
      * @return une réponse HTTP indiquant le succès ou l'échec de la réservation
      */
     @PostMapping("/billet")
-    public ResponseEntity<?> reserverBillet(@RequestParam long idEpreuve, HttpSession session) {
+    public ResponseEntity<?> reserverBillet(@RequestParam long id, HttpSession session) {
         if (session.getAttribute("email") != null) {
-            return ResponseEntity.ok(spectateurService.reserverBillet(idEpreuve, session.getAttribute("email").toString()));
+            return ResponseEntity.ok(spectateurService.reserverBillet(id, session.getAttribute("email").toString()));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }

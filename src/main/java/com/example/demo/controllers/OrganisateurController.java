@@ -206,6 +206,40 @@ public class OrganisateurController {
     }
 
     /**
+     * Crée une nouvelle infrastructure sportive.
+     *
+     * @param infrastructureSportive le contrôleur à créer
+     * @param session    la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la création.
+     */
+    @PostMapping("/infrastructure")
+    public ResponseEntity<String> creerInfrastructure(@RequestBody InfrastructureSportive infrastructureSportive, HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            organisateurService.creerInfrastructureSportive(infrastructureSportive);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Infrastructure créée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    /**
+     * Supprime une infrastructure sportive par son id.
+     *
+     * @param idInfrastructure   l'id de l'infrastructure sportive
+     * @param session la session HTTP
+     * @return une réponse HTTP indiquant le succès ou l'échec de la suppression.
+     */
+    @DeleteMapping("/infrastructure")
+    public ResponseEntity<String> supprimerInfrastructure(@RequestParam long idInfrastructure, HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            organisateurService.supprimerInfrastructure(idInfrastructure);
+            return ResponseEntity.ok("Infrastructure supprimée.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    /**
      * Met à jour la date d'une épreuve.
      *
      * @param date      la nouvelle date de l'épreuve
@@ -337,6 +371,36 @@ public class OrganisateurController {
         if (session.getAttribute("email") != null) {
             int totalVentes = organisateurService.getTotalVentes();
             return ResponseEntity.ok("Total des ventes : " + totalVentes);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    /**
+     * Liste tous les participants.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant la liste des participants ou une erreur si non autorisé
+     */
+    @GetMapping("/participant")
+    public ResponseEntity<?> listerPartcipant(HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            return ResponseEntity.ok(organisateurService.getListeParticipant());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
+        }
+    }
+
+    /**
+     * Liste toutes les délégations.
+     *
+     * @param session la session HTTP
+     * @return une réponse HTTP contenant la liste des délégations ou une erreur si non autorisé
+     */
+    @GetMapping("/delegation")
+    public ResponseEntity<?> ListerDelegation(HttpSession session) {
+        if (session.getAttribute("email") != null) {
+            return ResponseEntity.ok(organisateurService.getListeDelegation());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non autorisé. Veuillez vous connecter.");
         }

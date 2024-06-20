@@ -327,4 +327,44 @@ public class OrganisateurService {
 
     }
 
+    /**
+     * Crée une nouvelle infrastructure sportive.
+     *
+     * @param infrastructureSportive l'infrastructure sportive à créer
+     */
+    @Transactional
+    public void creerInfrastructureSportive(InfrastructureSportive infrastructureSportive) {
+        infrastructureSportiveRepository.save(infrastructureSportive);
+    }
+
+    /**
+     * Supprime une infrastructure sportive par son identifiant.
+     *
+     * @param idInfrastructure l'identifiant de l'infrastructure à supprimer
+     */
+    @Transactional
+    public void supprimerInfrastructure(long idInfrastructure) {
+        InfrastructureSportive infrastructureSportive = infrastructureSportiveRepository.findById(idInfrastructure).orElseThrow(()
+                -> new EntityNotFoundException("Infrastructure non trouvée avec l'id : " + idInfrastructure));
+        infrastructureSportiveRepository.delete(infrastructureSportive);
+    }
+
+    /**
+     * Récupère la liste de tous les participants.
+     *
+     * @return un itérable contenant tous les participants
+     */
+    public Iterable<Participant> getListeParticipant() {
+        return participantRepository.findAll();
+    }
+
+    /**
+     * Récupère la liste de toutes les délégations.
+     *
+     * @return un itérable contenant toutes les délégations
+     */
+    public Iterable<Delegation> getListeDelegation() {
+        return delegationRepository.findAll();
+    }
+
 }
