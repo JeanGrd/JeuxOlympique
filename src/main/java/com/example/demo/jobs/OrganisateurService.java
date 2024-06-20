@@ -60,12 +60,12 @@ public class OrganisateurService {
     /**
      * Supprime une délégation et dissocie tous les participants liés.
      *
-     * @param id l'identifiant de la délégation à supprimer
+     * @param idDelegation l'identifiant de la délégation à supprimer
      */
     @Transactional
-    public void supprimerDelegation(long id) {
-        Delegation delegation = delegationRepository.findById(id).orElseThrow(()
-                -> new EntityNotFoundException("Délégation non trouvée avec l'id' : " + id));
+    public void supprimerDelegation(long idDelegation) {
+        Delegation delegation = delegationRepository.findById(idDelegation).orElseThrow(()
+                -> new EntityNotFoundException("Délégation non trouvée avec l'id' : " + idDelegation));
 
         List<Participant> participants = participantRepository.findByDelegation(delegation);
         for (Participant participant : participants) {
@@ -98,11 +98,12 @@ public class OrganisateurService {
     /**
      * Supprime une épreuve.
      *
-     * @param id l'identifiant de l'épreuve à supprimer
+     * @param idEpreuve l'identifiant de l'épreuve à supprimer
      */
     @Transactional
-    public void supprimerEpreuve(long id) {
-        Epreuve epreuve = epreuveRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + id));
+    public void supprimerEpreuve(long idEpreuve) {
+        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
+                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
 
         epreuveRepository.delete(epreuve);
     }

@@ -46,16 +46,16 @@ public class ParticipantService {
      * Inscrit un participant à une épreuve spécifique.
      *
      * @param email     l'email du participant
-     * @param epreuveId l'identifiant de l'épreuve
+     * @param idEpreuve l'identifiant de l'épreuve
      * @return un message de confirmation de l'inscription
      */
     @Transactional
-    public String inscrireEpreuve(String email, long epreuveId) {
+    public String inscrireEpreuve(String email, long idEpreuve) {
         Participant participant = participantRepository.findByEmail(email).orElseThrow(()
                 -> new EntityNotFoundException("Participant non trouvé avec l'email : " + email));
         ;
-        Epreuve epreuve = epreuveRepository.findById(epreuveId).orElseThrow(()
-                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + epreuveId));
+        Epreuve epreuve = epreuveRepository.findById(idEpreuve).orElseThrow(()
+                -> new EntityNotFoundException("Epreuve non trouvée avec l'id : " + idEpreuve));
 
         Delegation delegation = participant.getDelegation();
 
@@ -63,7 +63,8 @@ public class ParticipantService {
             return ("Le participant n'est associé à aucune délégation.");
         }
 
-        boolean alreadyExists = participeRepository.findByDelegation_IdAndEpreuve_Id(delegation.getId(), epreuveId).isPresent();
+        boolean alreadyExists = participeRepository.findByDelegation_IdAndEpreuve_Id(delegation.getId(), idEpreuve).isPresent();
+
         // Vérifier si l'inscription est possible (avant 10 jours de la date de l'épreuve)
         LocalDate now = LocalDate.now();
         LocalDate dateEpreuve = epreuve.getDate();
