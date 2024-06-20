@@ -32,6 +32,7 @@ This project is an application for managing the Olympic Games, developed as part
    ```bash
    mvn spring-boot:run
    ```
+5. Don't forget to fill in your MySQL properties in the application.properties file.
 
 *Note: No web interface has been developed. If you want to try the application, you need to use an API platform like Postman.*
 
@@ -60,4 +61,4 @@ Written by:
 - Touria SAYAGH
 - Jean GUIRAUD
 
-Year of project completion : 2024
+Year of project completion: 2024
