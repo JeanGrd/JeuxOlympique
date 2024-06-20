@@ -3,6 +3,7 @@ package com.example.demo.dao;
 import com.example.demo.entities.Billet;
 import com.example.demo.entities.Epreuve;
 import com.example.demo.entities.Spectateur;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -40,4 +41,14 @@ public interface BilletRepository extends CrudRepository<Billet, Long> {
      * @return une liste de billets pour le spectateur spécifié
      */
     List<Billet> findAllBySpectateur_Email(String email);
+
+    /**
+     * Vérifie si une épreuve est complète en termes de billets vendus.
+     *
+     * @param idEpreuve l'identifiant de l'épreuve
+     * @return true si le nombre de billets vendus est égal ou supérieur au nombre maximum de billets, sinon false
+     */
+    @Query("SELECT CASE WHEN COUNT(b) >= e.nb_billets THEN true ELSE false END " +
+            "FROM Billet b JOIN b.epreuve e WHERE e.id = :idEpreuve AND b.etat = 'Payé'")
+    boolean isFull(long idEpreuve);
 }

@@ -47,6 +47,12 @@ public interface EpreuveRepository extends CrudRepository<Epreuve, Long> {
             "(SELECT SUM(e.nb_billets) AS total_count FROM Epreuve e) AS total_billets")
     Double getPourcentageBilletsVendus();
 
-
+    /**
+     * Récupère la liste des épreuves disponibles.
+     * Une épreuve est considérée comme disponible si le nombre de délégations inscrites
+     * (via la table Participe) est inférieur au nombre maximum de délégations autorisées (nb_delegations).
+     *
+     * @return la liste des épreuves disponibles
+     */
     @Query("SELECT e FROM Epreuve e WHERE e.nb_delegations > (SELECT COUNT(p) FROM Participe p WHERE p.epreuve = e)")
     List<Epreuve> getEpreuveDisponible();}

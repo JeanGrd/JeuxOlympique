@@ -113,6 +113,10 @@ public class SpectateurService {
             return "Vous avez déjà réservé le nombre maximum de billets pour cette épreuve.";
         }
 
+        if (billetRepository.isFull(idEpreuve)) {
+            return "Plus de place disponible.";
+        }
+
         billet.setEtat("Réservé");
         billetRepository.save(billet);
         return "Réservation confirmée.";
