@@ -123,7 +123,7 @@ public class ParticipantController {
      * @return une réponse HTTP contenant le programme des épreuves ou une erreur si non autorisé
      */
     @GetMapping("/programme")
-    public ResponseEntity<?> consulterProgramme(HttpSession session) {
+    public ResponseEntity<?> consulterEpreuveDisponible(HttpSession session) {
         if (session.getAttribute("email") != null) {
             return ResponseEntity.ok(participantService.consulterEpreuveDisponible());
         } else {
