@@ -131,7 +131,7 @@ public class JeuxMiagiquesApplication implements CommandLineRunner {
         Controleur c = new Controleur();
         c.setPrenom("Cédric");
         c.setNom("Teyssié");
-        c.setEmail("cédri@teyssié.fr");
+        c.setEmail("cédric@teyssié.fr");
 
         organisateurService.creerControleur(c);
 
